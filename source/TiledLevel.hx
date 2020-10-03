@@ -97,11 +97,11 @@ class TiledLevel extends TiledMap
 				]);
 			}
 
-			if (tileLayer.name.toLowerCase() == "background")
+			if (tileLayer.name.toLowerCase().indexOf("background") >= 0)
 			{
 				backgroundLayer.add(tilemap);
 			}
-			else if (tileLayer.name.toLowerCase() == "foreground")
+			else if (tileLayer.name.toLowerCase().indexOf("foreground") >= 0)
 			{
 				foregroundLayer.add(tilemap);
 			}

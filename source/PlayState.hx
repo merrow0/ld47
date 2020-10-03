@@ -31,6 +31,7 @@ class PlayState extends FlxState
 	public var level:TiledLevel;
 	public var wurstGroup:FlxGroup;
 	public var spawners:FlxTypedGroup<WurstSpawner>;
+	public var exits:FlxGroup;
 	public var actors:FlxTypedGroup<FlowActor>;
 	public var exit:FlxSprite;
 
@@ -60,6 +61,8 @@ class PlayState extends FlxState
 		spawners = new FlxTypedGroup<WurstSpawner>();
 		actors = new FlxTypedGroup<FlowActor>();
 		wurstGroup = new FlxGroup();
+		exits = new FlxGroup();
+
 		_left = new FlxActionDigital();
 		_right = new FlxActionDigital();
 		_up = new FlxActionDigital();
@@ -76,12 +79,13 @@ class PlayState extends FlxState
 
 		level = new TiledLevel(AssetPaths.level__tmx, this);
 
-		add(spawners);
 		add(level.backgroundLayer);
+		add(spawners);
 		add(level.wallLayer);
 		add(wurstGroup);
 		add(level.foregroundLayer);
 		add(actors);
+		add(exits);
 
 		mapCam = new FlxCamera(0, 0, FlxG.width, FlxG.height, 1);
 		mapCam.scroll.set((FlxG.width * -0.5) + (level.tileWidth * level.tileWidth / 2), (FlxG.height * -0.5) + (level.tileHeight * level.tileHeight / 2));
@@ -111,9 +115,9 @@ class PlayState extends FlxState
 
 	public function handleLoadExit(x:Int, y:Int):Void
 	{
-		exit = new FlxSprite(x, y);
+		var exit = new FlxSprite(x, y);
 		exit.loadGraphic(AssetPaths.exit__png, false, 16, 16);
-		add(exit);
+		exits.add(exit);
 	}
 
 	public function handleFlowActor(x:Int, y:Int, type:ActorType):Void
@@ -150,6 +154,7 @@ class PlayState extends FlxState
 		});
 
 		FlxG.overlap(wurstGroup, actors, onWurstHitsActor);
+		FlxG.overlap(wurstGroup, exits, onWurstHitsExit);
 	}
 
 	function clickActorCheck():Void
@@ -218,11 +223,24 @@ class PlayState extends FlxState
 		}
 	}
 
-	function onWurstHitsActor(wurst:Wurst, actor:FlowActor)
+	function onWurstHitsActor(wurst:Wurst, actor:FlowActor):Void
 	{
 		if (wurst.direction != actor.direction)
 		{
 			wurst.setNextDirection(actor.x, actor.y, actor.direction);
 		}
+
+		if (actor.type == AUTO)
+		{
+			actor.setNextDirection(wurst.direction);
+		}
+	}
+
+	function onWurstHitsExit(wurst:Wurst, actor:FlxSprite):Void
+	{
+		if (!wurst.active)
+			return;
+
+		wurst.kill();
 	}
 }

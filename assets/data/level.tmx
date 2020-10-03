@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="40">
+<map version="1.4" tiledversion="2020.09.09" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="40">
  <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16" tilecount="40" columns="8">
   <image source="../images/tiles.png" width="128" height="80"/>
  </tileset>
  <tileset firstgid="41" name="water_tiles" tilewidth="16" tileheight="16" tilecount="4" columns="4">
-  <image source="../../../Workspace/water_tiles.png" width="64" height="16"/>
+  <image source="../images/water_tiles.png" width="64" height="16"/>
   <tile id="0">
    <animation>
     <frame tileid="0" duration="100"/>
@@ -51,11 +51,11 @@
   <object id="12" name="exit" x="672" y="736" width="16" height="16"/>
   <object id="13" name="exit" x="400" y="736" width="16" height="16"/>
   <object id="4" name="exit" x="112" y="736" width="16" height="16"/>
-  <object id="5" name="flow_actor" type="manuell" x="144" y="320" width="15.4737" height="16.0263"/>
-  <object id="26" name="flow_actor" type="manuell" x="448" y="320" width="15.4737" height="16.0263"/>
-  <object id="14" name="flow_actor" type="manuell" x="224" y="256" width="15.4737" height="16.0263"/>
-  <object id="15" name="flow_actor" type="manuell" x="336" y="256" width="15.4737" height="16.0263"/>
-  <object id="16" name="flow_actor" type="manuell" x="448" y="256" width="15.4737" height="16.0263"/>
+  <object id="5" name="flow_actor" type="manuell" x="144" y="320" width="16" height="16"/>
+  <object id="26" name="flow_actor" type="manuell" x="448" y="320" width="16" height="16"/>
+  <object id="14" name="flow_actor" type="manuell" x="224" y="256" width="16" height="16"/>
+  <object id="15" name="flow_actor" type="manuell" x="336" y="256" width="16" height="16"/>
+  <object id="16" name="flow_actor" type="manuell" x="448" y="256" width="16" height="16"/>
   <object id="17" name="flow_actor" type="manuell" x="560" y="256" width="15.4737" height="16.0263"/>
   <object id="18" name="flow_actor" type="manuell" x="672" y="256" width="15.4737" height="16.0263"/>
   <object id="31" name="flow_actor" type="manuell" x="112" y="688" width="15.4737" height="16.0263"/>

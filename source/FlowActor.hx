@@ -6,6 +6,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
+import flixel.util.FlxTimer;
 
 class FlowActor extends FlxSprite
 {
@@ -13,9 +14,11 @@ class FlowActor extends FlxSprite
 	public var possibleDirs:Array<Direction>;
 	public var direction:Direction;
 	public var isSelected:Bool;
+	public var nextDirSet:Bool;
 
 	var _state:PlayState;
 	var _tween:FlxTween;
+	var _avoidNextDirection:Direction;
 
 	public function new(x:Float, y:Float, actorType:ActorType, state:PlayState)
 	{
@@ -98,5 +101,27 @@ class FlowActor extends FlxSprite
 				scale.set(1, 1);
 			}
 		}
+	}
+
+	public function setNextDirection(avoidNextDir:Direction)
+	{
+		if (!nextDirSet)
+		{
+			_avoidNextDirection = avoidNextDir;
+			new FlxTimer().start(1.5, changeDirection);
+			nextDirSet = true;
+		}
+	}
+
+	public function changeDirection(f:FlxTimer):Void
+	{
+		var nextDirection = _avoidNextDirection;
+		while (nextDirection == _avoidNextDirection)
+		{
+			nextDirection = possibleDirs[FlxG.random.int(0, possibleDirs.length - 1)];
+		}
+
+		direction = nextDirection;
+		nextDirSet = false;
 	}
 }
