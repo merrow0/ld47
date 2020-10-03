@@ -27,7 +27,7 @@ class TiledLevel extends TiledMap
 	public var backgroundLayer:FlxGroup;
 	public var foregroundLayer:FlxGroup;
 
-	var collidableTileLayers:Array<FlxTilemap>;
+	public var collidableTileLayers:Array<FlxTilemap>;
 
 	public var imagesLayer:FlxGroup;
 
@@ -82,23 +82,22 @@ class TiledLevel extends TiledMap
 			var tilemap = new FlxTilemapExt();
 			tilemap.loadMapFromArray(tileLayer.tileArray, width, height, processedPath, tileSet.tileWidth, tileSet.tileHeight, OFF, tileSet.firstGID, 1, 1);
 
-			// if (tileLayer.properties.contains("animated"))
-			// {
-			// 	var tileset = tilesets["level"];
-			// 	var specialTiles:Map<Int, TiledTilePropertySet> = new Map();
-			// 	for (tileProp in tileset.tileProps)
-			// 	{
-			// 		if (tileProp != null && tileProp.animationFrames.length > 0)
-			// 		{
-			// 			specialTiles[tileProp.tileID + tileset.firstGID] = tileProp;
-			// 		}
-			// 	}
-			// 	var tileLayer:TiledTileLayer = cast layer;
-			// 	tilemap.setSpecialTiles([
-			// 		for (tile in tileLayer.tiles)
-			// 			if (tile != null && specialTiles.exists(tile.tileID)) getAnimatedTile(specialTiles[tile.tileID], tileset) else null
-			// 	]);
-			// }
+			if (tileLayer.properties.contains("animated"))
+			{
+				var specialTiles:Map<Int, TiledTilePropertySet> = new Map();
+				for (tileProp in tileSet.tileProps)
+				{
+					if (tileProp != null && tileProp.animationFrames.length > 0)
+					{
+						specialTiles[tileProp.tileID + tileSet.firstGID] = tileProp;
+					}
+				}
+
+				tilemap.setSpecialTiles([
+					for (tile in tileLayer.tiles)
+						if (tile != null && specialTiles.exists(tile.tileID)) getAnimatedTile(specialTiles[tile.tileID], tileSet) else null
+				]);
+			}
 
 			if (tileLayer.name.toLowerCase() == "background")
 			{
@@ -213,7 +212,7 @@ class TiledLevel extends TiledMap
 			case "wurst_spawner":
 				state.handleLoadSpawner(x, y);
 			case "flow_actor":
-				state.handleFlowActor(x, y, o.type);
+				state.handleFlowActor(x, y, o.type.toLowerCase() == "auto" ? AUTO : MANUAL);
 			case "exit":
 				state.handleLoadExit(x, y);
 		}

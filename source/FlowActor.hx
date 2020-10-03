@@ -1,17 +1,25 @@
 package;
 
+import PlayState.ActorType;
 import flixel.FlxSprite;
 
 class FlowActor extends FlxSprite
 {
-	public var type:String;
+	public var type:ActorType;
 
-	public function new(x, y, actorType)
+	public function new(x:Float, y:Float, actorType:ActorType)
 	{
 		super(x, y);
 
-		loadGraphic(AssetPaths.actor__png, false, 16, 16);
 		type = actorType;
+
+		switch (type)
+		{
+			case(AUTO):
+				loadGraphic(AssetPaths.actor_auto__png, false, 16, 16);
+			case(MANUAL):
+				loadGraphic(AssetPaths.actor_manual__png, false, 16, 16);
+		}
 	}
 
 	override public function update(elapsed:Float):Void

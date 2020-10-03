@@ -14,7 +14,12 @@ class WurstSpawner extends FlxSprite
 	public function new(x:Float, y:Float, state:PlayState)
 	{
 		super(x, y);
+		loadGraphic(AssetPaths.scheisshaus__png, false, 34, 47);
 		_state = state;
+
+		width = 16;
+		height = 16;
+		offset.set(8, 30);
 
 		new FlxTimer().start(FlxG.random.int(1, 3), spawn);
 	}
@@ -26,10 +31,8 @@ class WurstSpawner extends FlxSprite
 
 	public function spawn(f:FlxTimer):Void
 	{
-		var wurst = new Wurst();
+		var wurst = new Wurst(x, y + 10);
+		wurst.direction = DOWN;
 		_state.wurstGroup.add(wurst);
-		wurst.x = x;
-		wurst.y = y + 10;
-		wurst.velocity.y = 10;
 	}
 }
