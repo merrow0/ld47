@@ -2,13 +2,18 @@ package;
 
 import PlayState.Direction;
 import flixel.FlxSprite;
+import flixel.math.FlxMath;
 
 class Wurst extends FlxSprite
 {
-	public static inline var WURST_SPEED:Int = 15;
+	public static inline var WURST_SPEED:Int = 25;
 
 	public var direction:Direction;
 	public var possibleDirections:Array<Direction>;
+
+	var _nextDirection:Direction;
+	var _nextX:Float;
+	var _nextY:Float;
 
 	public function new(x:Float, y:Float)
 	{
@@ -32,13 +37,23 @@ class Wurst extends FlxSprite
 				velocity.set(-WURST_SPEED, 0);
 			case RIGHT:
 				velocity.set(WURST_SPEED, 0);
-			default:
+			case NONE:
 				velocity.set(0, 0);
+		}
+
+		if (direction != _nextDirection && _nextX != null && _nextY != null && Std.int(x) == Std.int(_nextX) && Std.int(y) == Std.int(_nextY))
+		{
+			x = _nextX;
+			y = _nextY;
+			direction = _nextDirection;
+			velocity.set(0, 0);
 		}
 	}
 
-	public function setDirection(newDir:Direction)
+	public function setNextDirection(nextX:Float, nextY:Float, newDir:Direction)
 	{
-		direction = newDir;
+		_nextX = nextX;
+		_nextY = nextY;
+		_nextDirection = newDir;
 	}
 }

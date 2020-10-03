@@ -5,8 +5,9 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
+import flixel.input.actions.FlxAction;
+import flixel.input.actions.FlxActionManager;
 import flixel.math.FlxPoint;
-import flixel.util.FlxColor;
 
 enum Direction
 {
@@ -25,6 +26,8 @@ enum ActorType
 
 class PlayState extends FlxState
 {
+	static var actions:FlxActionManager;
+
 	public var level:TiledLevel;
 	public var wurstGroup:FlxGroup;
 	public var spawners:FlxTypedGroup<WurstSpawner>;
@@ -35,6 +38,10 @@ class PlayState extends FlxState
 	var grabbedPos:FlxPoint = new FlxPoint(-1, -1);
 	var initialScroll:FlxPoint = new FlxPoint(0, 0);
 	var selectedActor:FlowActor;
+	var _left:FlxActionDigital;
+	var _right:FlxActionDigital;
+	var _up:FlxActionDigital;
+	var _down:FlxActionDigital;
 
 	override public function create()
 	{
@@ -53,6 +60,19 @@ class PlayState extends FlxState
 		spawners = new FlxTypedGroup<WurstSpawner>();
 		actors = new FlxTypedGroup<FlowActor>();
 		wurstGroup = new FlxGroup();
+		_left = new FlxActionDigital();
+		_right = new FlxActionDigital();
+		_up = new FlxActionDigital();
+		_down = new FlxActionDigital();
+
+		if (actions == null)
+			actions = FlxG.inputs.add(new FlxActionManager());
+		actions.addActions([_left, _right, _up, _down]);
+
+		_left.addKey(LEFT, JUST_PRESSED).addKey(A, JUST_PRESSED);
+		_right.addKey(RIGHT, JUST_PRESSED).addKey(D, JUST_PRESSED);
+		_up.addKey(UP, JUST_PRESSED).addKey(W, JUST_PRESSED);
+		_down.addKey(DOWN, JUST_PRESSED).addKey(S, JUST_PRESSED);
 
 		level = new TiledLevel(AssetPaths.level__tmx, this);
 
@@ -66,7 +86,11 @@ class PlayState extends FlxState
 		mapCam = new FlxCamera(0, 0, FlxG.width, FlxG.height, 1);
 		mapCam.scroll.set((FlxG.width * -0.5) + (level.tileWidth * level.tileWidth / 2), (FlxG.height * -0.5) + (level.tileHeight * level.tileHeight / 2));
 		mapCam.setScrollBoundsRect(0, 0, level.fullWidth, level.fullHeight, true);
+		mapCam.antialiasing = true;
 		FlxG.cameras.add(mapCam);
+
+		// Init objects
+		actors.forEach((actor) -> actor.init());
 	}
 
 	override public function update(elapsed:Float)
@@ -75,6 +99,7 @@ class PlayState extends FlxState
 
 		collisionCheck();
 		clickActorCheck();
+		keyboardCheck();
 		mouseCheck();
 	}
 
@@ -93,7 +118,7 @@ class PlayState extends FlxState
 
 	public function handleFlowActor(x:Int, y:Int, type:ActorType):Void
 	{
-		var actor = new FlowActor(x, y, type);
+		var actor = new FlowActor(x, y, type, this);
 		actors.add(actor);
 	}
 
@@ -117,12 +142,14 @@ class PlayState extends FlxState
 				if (level.collidableTileLayers[0].getTile(tileX + 1, tileY) == 0 && wurst.direction != LEFT)
 					possibleDirs.push(RIGHT);
 
-				if (possibleDirs.length > 0)
+				if (possibleDirs.length == 1)
 				{
-					wurst.setDirection(possibleDirs[FlxG.random.int(0, possibleDirs.length - 1)]);
+					wurst.direction = possibleDirs[0];
 				}
 			}
 		});
+
+		FlxG.overlap(wurstGroup, actors, onWurstHitsActor);
 	}
 
 	function clickActorCheck():Void
@@ -138,9 +165,10 @@ class PlayState extends FlxState
 				var actorGridX = Std.int(actor.x / level.tileWidth);
 				var actorGridY = Std.int(actor.y / level.tileHeight);
 
-				if (mousePosGridX == actorGridX && mousePosGridY == actorGridY)
+				if (actor.type == MANUAL && mousePosGridX == actorGridX && mousePosGridY == actorGridY)
 				{
-					actor.flipY = !actor.flipY;
+					selectedActor = actor;
+					selectedActor.isSelected = true;
 				}
 			});
 		}
@@ -157,6 +185,44 @@ class PlayState extends FlxState
 		{
 			var mousePosChange:FlxPoint = FlxG.mouse.getWorldPosition(mapCam).subtractPoint(grabbedPos);
 			mapCam.scroll.subtractPoint(mousePosChange);
+		}
+	}
+
+	function keyboardCheck():Void
+	{
+		if (selectedActor != null)
+		{
+			if (selectedActor.isSelected == true)
+			{
+				if (_left.triggered)
+				{
+					selectedActor.direction = LEFT;
+					selectedActor.isSelected = false;
+				}
+				else if (_right.triggered)
+				{
+					selectedActor.direction = RIGHT;
+					selectedActor.isSelected = false;
+				}
+				else if (_up.triggered)
+				{
+					selectedActor.direction = UP;
+					selectedActor.isSelected = false;
+				}
+				else if (_down.triggered)
+				{
+					selectedActor.direction = DOWN;
+					selectedActor.isSelected = false;
+				}
+			}
+		}
+	}
+
+	function onWurstHitsActor(wurst:Wurst, actor:FlowActor)
+	{
+		if (wurst.direction != actor.direction)
+		{
+			wurst.setNextDirection(actor.x, actor.y, actor.direction);
 		}
 	}
 }
