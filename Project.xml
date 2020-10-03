@@ -17,6 +17,7 @@
 	<window width="640" height="480" fps="60" background="#000000" hardware="true" vsync="false" />
 
 	<!--HTML5-specific-->
+	<window if="html5" fullscreen="true" />
 	<window if="html5" resizable="true" />
 
 	<!--Desktop-specific-->
@@ -46,6 +47,8 @@
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
+	<haxedef name="canvas" if="html5" />
+	<!-- <haxedef name="dom" if="html5" /> -->
 	<!--Enable the Flixel core recording system-->
 	<!--<haxedef name="FLX_RECORD" />-->
 
