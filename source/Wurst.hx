@@ -1,21 +1,21 @@
 package;
 
-import PlayState.WurstDirection;
+import PlayState.Direction;
 import flixel.FlxSprite;
 
 class Wurst extends FlxSprite
 {
 	public static inline var WURST_SPEED:Int = 15;
 
-	public var direction:WurstDirection;
-	public var possibleDirections:Array<WurstDirection>;
+	public var direction:Direction;
+	public var possibleDirections:Array<Direction>;
 
 	public function new(x:Float, y:Float)
 	{
 		super(x, y);
 
 		loadGraphic(AssetPaths.wurst__png, false, 16, 16);
-		possibleDirections = new Array<WurstDirection>();
+		possibleDirections = new Array<Direction>();
 	}
 
 	override public function update(elapsed:Float):Void
@@ -37,7 +37,7 @@ class Wurst extends FlxSprite
 		}
 	}
 
-	public function setDirection(newDir:WurstDirection)
+	public function setDirection(newDir:Direction)
 	{
 		direction = newDir;
 	}

@@ -1,11 +1,13 @@
 package;
 
 import PlayState.ActorType;
+import PlayState.Direction;
 import flixel.FlxSprite;
 
 class FlowActor extends FlxSprite
 {
 	public var type:ActorType;
+	public var allowedDirs:Array<Direction>;
 
 	public function new(x:Float, y:Float, actorType:ActorType)
 	{
@@ -26,4 +28,6 @@ class FlowActor extends FlxSprite
 	{
 		super.update(elapsed);
 	}
+
+	function checkPossibleDirs():Void {}
 }
