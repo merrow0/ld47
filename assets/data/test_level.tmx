@@ -19,7 +19,7 @@
  </tileset>
  <layer id="1" name="background" width="20" height="15">
   <properties>
-   <property name="tileset" value="wter_tiles"/>
+   <property name="tileset" value="water_tiles"/>
   </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,33,0,0,0,0,0,0,0,0,0,0,
