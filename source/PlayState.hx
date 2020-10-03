@@ -51,6 +51,8 @@ class PlayState extends FlxState
 		FlxG.debugger.visible = true;
 		FlxG.debugger.drawDebug = true;
 
+		FlxG.fullscreen = true;
+
 		// Mouse setup
 		// var mouseSprite = new FlxSprite();
 		// mouseSprite.makeGraphic(32, 32, FlxColor.TRANSPARENT);
