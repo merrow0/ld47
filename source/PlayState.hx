@@ -103,7 +103,7 @@ class PlayState extends FlxState
 		mapCam = new FlxCamera(0, 0, FlxG.width, FlxG.height, 1);
 		mapCam.scroll.set((FlxG.width * -0.5) + (level.tileWidth * level.tileWidth / 2), (FlxG.height * -0.5) + (level.tileHeight * level.tileHeight / 2));
 		mapCam.setScrollBoundsRect(0, 0, level.fullWidth, level.fullHeight, true);
-		mapCam.antialiasing = true;
+		// mapCam.antialiasing = true;
 		FlxG.cameras.add(mapCam);
 
 		// Init objects
