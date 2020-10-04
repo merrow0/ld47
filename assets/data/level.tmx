@@ -51,7 +51,7 @@
   <object id="55" name="exit" x="320" y="272" width="16" height="16"/>
   <object id="127" name="oneway" x="176" y="32" width="16" height="16">
    <properties>
-    <property name="onway_dir" value="right"/>
+    <property name="oneway_dir" value="right"/>
    </properties>
   </object>
   <object id="115" name="camera_start" x="190.667" y="200.333">
