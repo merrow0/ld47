@@ -38,6 +38,9 @@ class FlowActor extends FlxSprite
 				loadGraphic(AssetPaths.actor_manual__png, false, 16, 16);
 		}
 
+		// setSize(11, 11);
+		// offset.set(2, 2);
+
 		direction = initDir;
 		avoidDirection = avoidDir;
 	}
@@ -123,7 +126,7 @@ class FlowActor extends FlxSprite
 		if (!nextDirSet)
 		{
 			_avoidNextDirection = avoidNextDir;
-			new FlxTimer().start(1.3, changeDirection);
+			new FlxTimer().start(1.5, changeDirection);
 			nextDirSet = true;
 		}
 	}
@@ -138,5 +141,10 @@ class FlowActor extends FlxSprite
 
 		setDirection(nextDirection);
 		nextDirSet = false;
+	}
+
+	public function canChangeToDirection(dir:Direction):Bool
+	{
+		return possibleDirs.contains(dir);
 	}
 }

@@ -1,9 +1,11 @@
 package;
 
+import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.effects.particles.FlxEmitter;
 import flixel.group.FlxGroup;
 import flixel.input.actions.FlxAction;
 import flixel.input.actions.FlxActionManager;
@@ -59,7 +61,6 @@ class PlayState extends FlxState
 		FlxG.fullscreen = true;
 		FlxG.stage.showDefaultContextMenu = false;
 
-		// Mouse setup
 		// var mouseSprite = new FlxSprite();
 		// mouseSprite.makeGraphic(32, 32, FlxColor.TRANSPARENT);
 
@@ -96,12 +97,6 @@ class PlayState extends FlxState
 		add(actors);
 		add(exits);
 
-		// var scanlines = new FlxSprite(0, 0);
-		// scanlines.loadGraphic(AssetPaths.scanlines__png, false, FlxG.width, FlxG.height);
-		// scanlines.scrollFactor.set(0, 0);
-		// scanlines.alpha = 0.1;
-		// add(scanlines);
-
 		FlxG.camera.scroll.set((FlxG.width * -0.5) + (level.tileWidth * level.tileWidth / 2),
 			(FlxG.height * -0.5) + (level.tileHeight * level.tileHeight / 2));
 		FlxG.camera.setScrollBoundsRect(0, 0, level.fullWidth, level.fullHeight, true);
@@ -111,13 +106,6 @@ class PlayState extends FlxState
 		_hud.scrollFactor.set(0, 0);
 		add(_hud);
 
-		// uiCam = new FlxCamera(0, 0, FlxG.width, 20);
-		// uiCam.bgColor = FlxColor.TRANSPARENT;
-		// uiCam.setScrollBounds(0, FlxG.width, 0, FlxG.height);
-		// uiCam.antialiasing = true;
-		// FlxG.cameras.add(uiCam);
-
-		// Init objects
 		actors.forEach((actor) -> actor.init());
 
 		FlxG.sound.playMusic(AssetPaths.sewer_shuffle_new__ogg, 0.7, true);
@@ -204,7 +192,7 @@ class PlayState extends FlxState
 		FlxG.overlap(wurstGroup, actors, onWurstHitsActor);
 		FlxG.overlap(wurstGroup, exits, onWurstHitsExit);
 		FlxG.overlap(wurstGroup, spawners, onWurstHitsSpawner);
-		FlxG.overlap(wurstGroup, onWurstHitsWurst);
+		FlxG.overlap(wurstGroup, onWurstHitsWurst, pixelPerfectProcess);
 	}
 
 	function clickActorCheck():Void
@@ -255,22 +243,22 @@ class PlayState extends FlxState
 		{
 			if (selectedActor.isSelected == true)
 			{
-				if (_left.triggered)
+				if (_left.triggered && selectedActor.canChangeToDirection(LEFT))
 				{
 					selectedActor.setDirection(LEFT);
 					selectedActor.isSelected = false;
 				}
-				else if (_right.triggered)
+				else if (_right.triggered && selectedActor.canChangeToDirection(RIGHT))
 				{
 					selectedActor.setDirection(RIGHT);
 					selectedActor.isSelected = false;
 				}
-				else if (_up.triggered)
+				else if (_up.triggered && selectedActor.canChangeToDirection(UP))
 				{
 					selectedActor.setDirection(UP);
 					selectedActor.isSelected = false;
 				}
-				else if (_down.triggered)
+				else if (_down.triggered && selectedActor.canChangeToDirection(DOWN))
 				{
 					selectedActor.setDirection(DOWN);
 					selectedActor.isSelected = false;
@@ -301,7 +289,8 @@ class PlayState extends FlxState
 
 	function onWurstHitsWurst(wurst1:Wurst, wurst2:Wurst):Void
 	{
-		wurst1.isImmovable = wurst2.isImmovable = true;
+		wurst1.isImmovable = true;
+		wurst2.kill();
 	}
 
 	function onWurstHitsExit(wurst:Wurst, actor:FlxSprite):Void
@@ -314,7 +303,20 @@ class PlayState extends FlxState
 
 	function onWurstHitsSpawner(wurst:Wurst, spawner:WurstSpawner):Void
 	{
+		wurst.kill();
 		// FlxG.switchState(new PlayState());
+	}
+
+	private static function pixelPerfectProcess(obj1:FlxBasic, obj2:FlxBasic):Bool
+	{
+		if (Std.is(obj1, Wurst) && Std.is(obj2, Wurst))
+		{
+			var spr1:Wurst = cast obj1;
+			var spr2:Wurst = cast obj2;
+			if (FlxG.pixelPerfectOverlap(spr1, spr2))
+				return true;
+		}
+		return false;
 	}
 
 	function strToDirection(str:String):Direction

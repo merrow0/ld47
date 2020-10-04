@@ -1,8 +1,10 @@
 package;
 
 import PlayState.Direction;
+import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.math.FlxMath;
+import flixel.effects.particles.FlxEmitter;
+import flixel.util.FlxColor;
 
 class Wurst extends FlxSprite
 {
@@ -22,7 +24,9 @@ class Wurst extends FlxSprite
 
 		loadGraphic(AssetPaths.poop__png, false, 16, 16);
 		possibleDirections = new Array<Direction>();
-		drag.set(400, 400);
+
+		// setSize(11, 11);
+		// offset.set(2, 2);
 	}
 
 	override public function update(elapsed:Float):Void
@@ -56,6 +60,17 @@ class Wurst extends FlxSprite
 			direction = _nextDirection;
 			velocity.set(0, 0);
 		}
+	}
+
+	override function kill()
+	{
+		super.kill();
+
+		var emitter = new FlxEmitter(x, y);
+		FlxG.state.add(emitter);
+		emitter.launchMode = FlxEmitterMode.CIRCLE;
+		emitter.acceleration.set(-8, 800, -16, 1600);
+		emitter.makeParticles(5, 5, FlxColor.BROWN, 32).start(true, 0, 0);
 	}
 
 	public function setNextDirection(nextX:Float, nextY:Float, newDir:Direction)

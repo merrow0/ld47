@@ -23,7 +23,10 @@ class WurstSpawner extends FlxSprite
 	{
 		super(x, y);
 
-		loadGraphic(AssetPaths.scheisshaus__png, false, 34, 47);
+		if (initDir == DOWN)
+		{
+			loadGraphic(AssetPaths.scheisshaus__png, false, 34, 47);
+		}
 		_state = state;
 		_minInitSpawnTime = minInitSpawnTime;
 		_maxInitSpawnTime = maxInitSpawnTime;
