@@ -213,10 +213,12 @@ class TiledLevel extends TiledMap
 				{
 					initDir = o.properties.get("init_dir");
 				}
+				var minInitTime:Int = Std.parseInt(o.properties.get("min_init_spawntime"));
+				var maxInitTime:Int = Std.parseInt(o.properties.get("max_init_spawntime"));
 				var minTime:Int = Std.parseInt(o.properties.get("min_spawntime"));
 				var maxTime:Int = Std.parseInt(o.properties.get("max_spawntime"));
 
-				state.handleLoadSpawner(x, y, minTime, maxTime, initDir);
+				state.handleLoadSpawner(x, y, minInitTime, maxInitTime, minTime, maxTime, initDir);
 			case "flow_actor":
 				var initDir:String = null;
 				var avoidDir:String = null;

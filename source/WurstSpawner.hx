@@ -10,16 +10,20 @@ class WurstSpawner extends FlxSprite
 {
 	var _wurstGrp:FlxTypedGroup<Wurst>;
 	var _state:PlayState;
+	var _minInitSpawnTime:Int;
+	var _maxInitSpawnTime:Int;
 	var _minSpawnTime:Int;
 	var _maxSpawnTime:Int;
 	var _wurstDirection:Direction;
 	var _timer:FlxTimer;
 
-	public function new(x:Float, y:Float, minSpawnTime:Int, maxSpawnTime:Int, initDir:Direction, state:PlayState)
+	public function new(x:Float, y:Float, minInitSpawnTime:Int, maxInitSpawnTime:Int, minSpawnTime:Int, maxSpawnTime:Int, initDir:Direction, state:PlayState)
 	{
 		super(x, y);
 		loadGraphic(AssetPaths.scheisshaus__png, false, 34, 47);
 		_state = state;
+		_minInitSpawnTime = minInitSpawnTime;
+		_maxInitSpawnTime = maxInitSpawnTime;
 		_minSpawnTime = minSpawnTime;
 		_maxSpawnTime = maxSpawnTime;
 		_wurstDirection = initDir;
@@ -28,7 +32,7 @@ class WurstSpawner extends FlxSprite
 		height = 16;
 		offset.set(8, 15);
 
-		new FlxTimer().start(FlxG.random.int(2, 5), initWurst);
+		new FlxTimer().start(FlxG.random.int(_minInitSpawnTime, _maxInitSpawnTime), initWurst);
 	}
 
 	override public function update(elapsed:Float):Void
