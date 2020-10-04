@@ -32,6 +32,8 @@ class FlowActor extends FlxSprite
 		{
 			case(AUTO):
 				loadGraphic(AssetPaths.actor_auto__png, false, 16, 16);
+			case(SEMI):
+				loadGraphic(AssetPaths.actor_semi__png, false, 16, 16);
 			case(MANUAL):
 				loadGraphic(AssetPaths.actor_manual__png, false, 16, 16);
 		}
@@ -110,6 +112,12 @@ class FlowActor extends FlxSprite
 		}
 	}
 
+	public function setDirection(dir:Direction)
+	{
+		FlxG.sound.play(Reg.sounds_actors[FlxG.random.int(0, Reg.sounds_actors.length - 1)], 0.7, false);
+		direction = dir;
+	}
+
 	public function setNextDirection(avoidNextDir:Direction)
 	{
 		if (!nextDirSet)
@@ -128,7 +136,7 @@ class FlowActor extends FlxSprite
 			nextDirection = possibleDirs[FlxG.random.int(0, possibleDirs.length - 1)];
 		}
 
-		direction = nextDirection;
+		setDirection(nextDirection);
 		nextDirSet = false;
 	}
 }

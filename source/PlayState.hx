@@ -22,6 +22,7 @@ enum Direction
 enum ActorType
 {
 	AUTO;
+	SEMI;
 	MANUAL;
 }
 
@@ -119,7 +120,7 @@ class PlayState extends FlxState
 		// Init objects
 		actors.forEach((actor) -> actor.init());
 
-		FlxG.sound.playMusic(AssetPaths.sewer_shuffle_new__mp3, 0.7, true);
+		FlxG.sound.playMusic(AssetPaths.sewer_shuffle_new__ogg, 0.7, true);
 		FlxG.sound.music.persist = false;
 	}
 
@@ -219,7 +220,7 @@ class PlayState extends FlxState
 				var actorGridX = Std.int(actor.x / level.tileWidth);
 				var actorGridY = Std.int(actor.y / level.tileHeight);
 
-				if (actor.type == MANUAL && mousePosGridX == actorGridX && mousePosGridY == actorGridY)
+				if (actor.type != AUTO && mousePosGridX == actorGridX && mousePosGridY == actorGridY)
 				{
 					if (selectedActor != null)
 					{
@@ -256,22 +257,22 @@ class PlayState extends FlxState
 			{
 				if (_left.triggered)
 				{
-					selectedActor.direction = LEFT;
+					selectedActor.setDirection(LEFT);
 					selectedActor.isSelected = false;
 				}
 				else if (_right.triggered)
 				{
-					selectedActor.direction = RIGHT;
+					selectedActor.setDirection(RIGHT);
 					selectedActor.isSelected = false;
 				}
 				else if (_up.triggered)
 				{
-					selectedActor.direction = UP;
+					selectedActor.setDirection(UP);
 					selectedActor.isSelected = false;
 				}
 				else if (_down.triggered)
 				{
-					selectedActor.direction = DOWN;
+					selectedActor.setDirection(DOWN);
 					selectedActor.isSelected = false;
 				}
 			}
@@ -292,7 +293,10 @@ class PlayState extends FlxState
 			wurst.setNextDirection(actor.x, actor.y, actor.direction);
 		}
 
-		actor.setNextDirection(wurst.direction);
+		if (actor.type != MANUAL)
+		{
+			actor.setNextDirection(wurst.direction);
+		}
 	}
 
 	function onWurstHitsWurst(wurst1:Wurst, wurst2:Wurst):Void

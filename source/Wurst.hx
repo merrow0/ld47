@@ -22,6 +22,7 @@ class Wurst extends FlxSprite
 
 		loadGraphic(AssetPaths.poop__png, false, 16, 16);
 		possibleDirections = new Array<Direction>();
+		drag.set(400, 400);
 	}
 
 	override public function update(elapsed:Float):Void
