@@ -6,18 +6,22 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
+import flixel.util.FlxTimer;
 
 class FlowActor extends FlxSprite
 {
 	public var type:ActorType;
 	public var possibleDirs:Array<Direction>;
-	public var direction:Direction;
+	public var direction:Direction = NONE;
+	public var avoidDirection:Direction = NONE;
 	public var isSelected:Bool;
+	public var nextDirSet:Bool;
 
 	var _state:PlayState;
 	var _tween:FlxTween;
+	var _avoidNextDirection:Direction;
 
-	public function new(x:Float, y:Float, actorType:ActorType, state:PlayState)
+	public function new(x:Float, y:Float, actorType:ActorType, initDir:Direction, avoidDir:Direction, state:PlayState)
 	{
 		super(x, y);
 
@@ -31,6 +35,9 @@ class FlowActor extends FlxSprite
 			case(MANUAL):
 				loadGraphic(AssetPaths.actor_manual__png, false, 16, 16);
 		}
+
+		direction = initDir;
+		avoidDirection = avoidDir;
 	}
 
 	public function init():Void
@@ -38,7 +45,10 @@ class FlowActor extends FlxSprite
 		possibleDirs = new Array<Direction>();
 		checkPossibleDirs();
 
-		direction = possibleDirs[FlxG.random.int(0, possibleDirs.length - 1)];
+		if (direction == NONE)
+		{
+			direction = possibleDirs[FlxG.random.int(0, possibleDirs.length - 1)];
+		}
 	}
 
 	override public function update(elapsed:Float):Void
@@ -54,13 +64,13 @@ class FlowActor extends FlxSprite
 		var tileX = Std.int(x / _state.level.tileWidth);
 		var tileY = Std.int(y / _state.level.tileHeight);
 
-		if (_state.level.collidableTileLayers[0].getTile(tileX, tileY - 1) == 0)
+		if (_state.level.collidableTileLayers[0].getTile(tileX, tileY - 1) == 0 && avoidDirection != UP)
 			possibleDirs.push(UP);
-		if (_state.level.collidableTileLayers[0].getTile(tileX, tileY + 1) == 0)
+		if (_state.level.collidableTileLayers[0].getTile(tileX, tileY + 1) == 0 && avoidDirection != DOWN)
 			possibleDirs.push(DOWN);
-		if (_state.level.collidableTileLayers[0].getTile(tileX - 1, tileY) == 0)
+		if (_state.level.collidableTileLayers[0].getTile(tileX - 1, tileY) == 0 && avoidDirection != LEFT)
 			possibleDirs.push(LEFT);
-		if (_state.level.collidableTileLayers[0].getTile(tileX + 1, tileY) == 0)
+		if (_state.level.collidableTileLayers[0].getTile(tileX + 1, tileY) == 0 && avoidDirection != RIGHT)
 			possibleDirs.push(RIGHT);
 	}
 
@@ -98,5 +108,27 @@ class FlowActor extends FlxSprite
 				scale.set(1, 1);
 			}
 		}
+	}
+
+	public function setNextDirection(avoidNextDir:Direction)
+	{
+		if (!nextDirSet)
+		{
+			_avoidNextDirection = avoidNextDir;
+			new FlxTimer().start(1.3, changeDirection);
+			nextDirSet = true;
+		}
+	}
+
+	public function changeDirection(f:FlxTimer):Void
+	{
+		var nextDirection = _avoidNextDirection;
+		while (nextDirection == _avoidNextDirection)
+		{
+			nextDirection = possibleDirs[FlxG.random.int(0, possibleDirs.length - 1)];
+		}
+
+		direction = nextDirection;
+		nextDirSet = false;
 	}
 }

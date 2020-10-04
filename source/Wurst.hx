@@ -10,22 +10,29 @@ class Wurst extends FlxSprite
 
 	public var direction:Direction;
 	public var possibleDirections:Array<Direction>;
+	public var isImmovable = false;
 
 	var _nextDirection:Direction;
-	var _nextX:Float;
-	var _nextY:Float;
+	var _nextX:Float = 0.0;
+	var _nextY:Float = 0.0;
 
 	public function new(x:Float, y:Float)
 	{
 		super(x, y);
 
-		loadGraphic(AssetPaths.wurst__png, false, 16, 16);
+		loadGraphic(AssetPaths.poop__png, false, 16, 16);
 		possibleDirections = new Array<Direction>();
 	}
 
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+
+		if (isImmovable)
+		{
+			velocity.set(0, 0);
+			return;
+		}
 
 		switch (direction)
 		{
@@ -41,7 +48,7 @@ class Wurst extends FlxSprite
 				velocity.set(0, 0);
 		}
 
-		if (direction != _nextDirection && _nextX != null && _nextY != null && Std.int(x) == Std.int(_nextX) && Std.int(y) == Std.int(_nextY))
+		if (direction != _nextDirection && Std.int(x) == Std.int(_nextX) && Std.int(y) == Std.int(_nextY))
 		{
 			x = _nextX;
 			y = _nextY;

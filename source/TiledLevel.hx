@@ -97,11 +97,11 @@ class TiledLevel extends TiledMap
 				]);
 			}
 
-			if (tileLayer.name.toLowerCase() == "background")
+			if (tileLayer.name.toLowerCase().indexOf("background") >= 0)
 			{
 				backgroundLayer.add(tilemap);
 			}
-			else if (tileLayer.name.toLowerCase() == "foreground")
+			else if (tileLayer.name.toLowerCase().indexOf("foreground") >= 0)
 			{
 				foregroundLayer.add(tilemap);
 			}
@@ -208,11 +208,32 @@ class TiledLevel extends TiledMap
 		switch (o.name.toLowerCase())
 		{
 			case "wurst_spawner":
-				state.handleLoadSpawner(x, y);
+				var initDir:String = null;
+				if (o.properties.contains("init_dir"))
+				{
+					initDir = o.properties.get("init_dir");
+				}
+				var minTime:Int = Std.parseInt(o.properties.get("min_spawntime"));
+				var maxTime:Int = Std.parseInt(o.properties.get("max_spawntime"));
+
+				state.handleLoadSpawner(x, y, minTime, maxTime, initDir);
 			case "flow_actor":
-				state.handleFlowActor(x, y, o.type.toLowerCase() == "auto" ? AUTO : MANUAL);
+				var initDir:String = null;
+				var avoidDir:String = null;
+				if (o.properties.contains("init_dir"))
+				{
+					initDir = o.properties.get("init_dir");
+				}
+				if (o.properties.contains("avoid_dir"))
+				{
+					avoidDir = o.properties.get("avoid_dir");
+				}
+
+				state.handleFlowActor(x, y, o.type.toLowerCase() == "auto" ? AUTO : MANUAL, initDir, avoidDir);
 			case "exit":
 				state.handleLoadExit(x, y);
+			case "camera_start":
+				state.handleCameraStart(x, y);
 		}
 	}
 

@@ -8,6 +8,7 @@ import flixel.group.FlxGroup;
 import flixel.input.actions.FlxAction;
 import flixel.input.actions.FlxActionManager;
 import flixel.math.FlxPoint;
+import flixel.util.FlxColor;
 
 enum Direction
 {
@@ -31,17 +32,21 @@ class PlayState extends FlxState
 	public var level:TiledLevel;
 	public var wurstGroup:FlxGroup;
 	public var spawners:FlxTypedGroup<WurstSpawner>;
+	public var exits:FlxGroup;
 	public var actors:FlxTypedGroup<FlowActor>;
 	public var exit:FlxSprite;
 
 	var mapCam:FlxCamera;
+	var uiCam:FlxCamera;
 	var grabbedPos:FlxPoint = new FlxPoint(-1, -1);
 	var initialScroll:FlxPoint = new FlxPoint(0, 0);
 	var selectedActor:FlowActor;
+	var _initCamPos:FlxPoint;
 	var _left:FlxActionDigital;
 	var _right:FlxActionDigital;
 	var _up:FlxActionDigital;
 	var _down:FlxActionDigital;
+	var _hud:HUD;
 
 	override public function create()
 	{
@@ -49,6 +54,9 @@ class PlayState extends FlxState
 
 		FlxG.debugger.visible = true;
 		FlxG.debugger.drawDebug = true;
+
+		FlxG.fullscreen = true;
+		FlxG.stage.showDefaultContextMenu = false;
 
 		// Mouse setup
 		// var mouseSprite = new FlxSprite();
@@ -60,10 +68,13 @@ class PlayState extends FlxState
 		spawners = new FlxTypedGroup<WurstSpawner>();
 		actors = new FlxTypedGroup<FlowActor>();
 		wurstGroup = new FlxGroup();
+		exits = new FlxGroup();
+
 		_left = new FlxActionDigital();
 		_right = new FlxActionDigital();
 		_up = new FlxActionDigital();
 		_down = new FlxActionDigital();
+		_initCamPos = new FlxPoint(0, 0);
 
 		if (actions == null)
 			actions = FlxG.inputs.add(new FlxActionManager());
@@ -76,21 +87,41 @@ class PlayState extends FlxState
 
 		level = new TiledLevel(AssetPaths.level__tmx, this);
 
-		add(spawners);
 		add(level.backgroundLayer);
 		add(level.wallLayer);
 		add(wurstGroup);
+		add(spawners);
 		add(level.foregroundLayer);
 		add(actors);
+		add(exits);
 
-		mapCam = new FlxCamera(0, 0, FlxG.width, FlxG.height, 1);
+		// var scanlines = new FlxSprite(0, 0);
+		// scanlines.loadGraphic(AssetPaths.scanlines__png, false, FlxG.width, FlxG.height);
+		// scanlines.scrollFactor.set(0, 0);
+		// scanlines.alpha = 0.1;
+		// add(scanlines);
+
+		mapCam = new FlxCamera(0, 0, FlxG.width, FlxG.height);
 		mapCam.scroll.set((FlxG.width * -0.5) + (level.tileWidth * level.tileWidth / 2), (FlxG.height * -0.5) + (level.tileHeight * level.tileHeight / 2));
 		mapCam.setScrollBoundsRect(0, 0, level.fullWidth, level.fullHeight, true);
-		mapCam.antialiasing = true;
+		mapCam.focusOn(_initCamPos);
 		FlxG.cameras.add(mapCam);
+
+		_hud = new HUD();
+		_hud.cameras = [mapCam];
+		add(_hud);
+
+		// uiCam = new FlxCamera(0, 0, FlxG.width, 20);
+		// uiCam.bgColor = FlxColor.TRANSPARENT;
+		// uiCam.setScrollBounds(0, FlxG.width, 0, FlxG.height);
+		// uiCam.antialiasing = true;
+		// FlxG.cameras.add(uiCam);
 
 		// Init objects
 		actors.forEach((actor) -> actor.init());
+
+		FlxG.sound.playMusic(AssetPaths.sewer_shuffle_new__mp3, 0.8, true);
+		FlxG.sound.music.persist = false;
 	}
 
 	override public function update(elapsed:Float)
@@ -103,23 +134,44 @@ class PlayState extends FlxState
 		mouseCheck();
 	}
 
-	public function handleLoadSpawner(x:Float, y:Float):Void
+	public function handleLoadSpawner(x:Float, y:Float, minTime:Int, maxTime:Int, initDir:String):Void
 	{
-		var spawner = new WurstSpawner(x, y, this);
+		var initalDirection = Direction.DOWN;
+		if (initDir != null)
+		{
+			initalDirection = strToDirection(initDir);
+		}
+		var spawner = new WurstSpawner(x, y, minTime, maxTime, initalDirection, this);
 		spawners.add(spawner);
 	}
 
 	public function handleLoadExit(x:Int, y:Int):Void
 	{
-		exit = new FlxSprite(x, y);
-		exit.loadGraphic(AssetPaths.exit__png, false, 16, 16);
-		add(exit);
+		var exit = new FlxSprite(x, y);
+		exit.makeGraphic(16, 16, FlxColor.TRANSPARENT);
+		exits.add(exit);
 	}
 
-	public function handleFlowActor(x:Int, y:Int, type:ActorType):Void
+	public function handleFlowActor(x:Int, y:Int, type:ActorType, initDir:String, avoidDir:String):Void
 	{
-		var actor = new FlowActor(x, y, type, this);
+		var initalDirection = Direction.NONE;
+		if (initDir != null)
+		{
+			initalDirection = strToDirection(initDir);
+		}
+		var avoidDirection = Direction.NONE;
+		if (avoidDir != null)
+		{
+			avoidDirection = strToDirection(avoidDir);
+		}
+
+		var actor = new FlowActor(x, y, type, initalDirection, avoidDirection, this);
 		actors.add(actor);
+	}
+
+	public function handleCameraStart(x:Int, y:Int)
+	{
+		_initCamPos = new FlxPoint(x, y);
 	}
 
 	function collisionCheck():Void
@@ -150,6 +202,9 @@ class PlayState extends FlxState
 		});
 
 		FlxG.overlap(wurstGroup, actors, onWurstHitsActor);
+		FlxG.overlap(wurstGroup, exits, onWurstHitsExit);
+		FlxG.overlap(wurstGroup, spawners, onWurstHitsSpawner);
+		FlxG.overlap(wurstGroup, onWurstHitsWurst);
 	}
 
 	function clickActorCheck():Void
@@ -167,6 +222,10 @@ class PlayState extends FlxState
 
 				if (actor.type == MANUAL && mousePosGridX == actorGridX && mousePosGridY == actorGridY)
 				{
+					if (selectedActor != null)
+					{
+						selectedActor.isSelected = false;
+					}
 					selectedActor = actor;
 					selectedActor.isSelected = true;
 				}
@@ -186,6 +245,8 @@ class PlayState extends FlxState
 			var mousePosChange:FlxPoint = FlxG.mouse.getWorldPosition(mapCam).subtractPoint(grabbedPos);
 			mapCam.scroll.subtractPoint(mousePosChange);
 		}
+		// mapCam.zoom += 0.2 * FlxG.mouse.wheel / 100;
+		// _hud.zoomLevel.text = Std.string(mapCam.zoom);
 	}
 
 	function keyboardCheck():Void
@@ -216,13 +277,57 @@ class PlayState extends FlxState
 				}
 			}
 		}
+
+		// ***DEBUG ****
+		if (FlxG.keys.justPressed.SPACE)
+		{
+			FlxG.sound.music.stop();
+			FlxG.switchState(new PlayState());
+		}
 	}
 
-	function onWurstHitsActor(wurst:Wurst, actor:FlowActor)
+	function onWurstHitsActor(wurst:Wurst, actor:FlowActor):Void
 	{
 		if (wurst.direction != actor.direction)
 		{
 			wurst.setNextDirection(actor.x, actor.y, actor.direction);
 		}
+
+		actor.setNextDirection(wurst.direction);
+	}
+
+	function onWurstHitsWurst(wurst1:Wurst, wurst2:Wurst):Void
+	{
+		wurst1.isImmovable = wurst2.isImmovable = true;
+	}
+
+	function onWurstHitsExit(wurst:Wurst, actor:FlxSprite):Void
+	{
+		if (!wurst.active)
+			return;
+
+		wurst.kill();
+	}
+
+	function onWurstHitsSpawner(wurst:Wurst, spawner:WurstSpawner):Void
+	{
+		// FlxG.switchState(new PlayState());
+	}
+
+	function strToDirection(str:String):Direction
+	{
+		var ret:Direction = NONE;
+		switch (str.toLowerCase())
+		{
+			case "up":
+				ret = UP;
+			case "down":
+				ret = DOWN;
+			case "left":
+				ret = LEFT;
+			case "right":
+				ret = RIGHT;
+		}
+		return ret;
 	}
 }
