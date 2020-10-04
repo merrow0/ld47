@@ -3,16 +3,11 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
-import flixel.addons.effects.chainable.FlxEffectSprite;
-import flixel.addons.effects.chainable.FlxWaveEffect;
-import flixel.group.FlxGroup;
-import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxButton;
 import flixel.util.FlxAxes;
 import flixel.util.FlxColor;
-import flixel.util.FlxSpriteUtil;
 
 class EscapeHUD extends FlxSubState
 {
@@ -23,19 +18,16 @@ class EscapeHUD extends FlxSubState
 	{
 		super();
 
-		persistentDraw = false;
-
 		var title:FlxText = new FlxText(0, 0, 0, "PAUSED", 28);
 		title.screenCenter(FlxAxes.X);
 		title.y = 40;
 		title.scrollFactor.set();
-		title.setBorderStyle(OUTLINE, FlxColor.RED, 5);
+		title.setBorderStyle(OUTLINE, FlxColor.BROWN, 5);
 		title.alpha = 0;
 		FlxTween.tween(title, {alpha: 1}, 2);
 		add(title);
 
 		add(new FlxButton(FlxG.camera.width / 2 - 45, FlxG.camera.height / 2 - 15, "Restart", click_restart));
-
 		add(new FlxButton(FlxG.camera.width / 2 - 45, FlxG.camera.height / 2 + 15, "Quit", click_quit));
 	}
 
@@ -51,17 +43,18 @@ class EscapeHUD extends FlxSubState
 
 	function click_restart():Void
 	{
-		FlxG.camera.fade(FlxColor.BLACK, 0.5, false, restart);
+		FlxG.camera.fade(FlxColor.BLACK, 0.2, false, restart);
 	}
 
 	function restart():Void
 	{
+		FlxG.sound.music.stop();
 		FlxG.switchState(new PlayState());
 	}
 
 	function click_quit():Void
 	{
-		FlxG.camera.fade(FlxColor.TRANSPARENT, 0.5, false, actuallyQuit);
+		FlxG.camera.fade(FlxColor.TRANSPARENT, 0.2, false, actuallyQuit);
 	}
 
 	function actuallyQuit():Void

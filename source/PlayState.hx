@@ -121,6 +121,8 @@ class PlayState extends FlxState
 		keyboardCheck();
 		mouseCheck();
 		checkWin();
+
+		persistentDraw = Reg.persistentDraw;
 	}
 
 	public function handleLoadSpawner(x:Float, y:Float, minInitTime:Int, maxInitTime:Int, minTime:Int, maxTime:Int, initDir:String):Void
@@ -296,7 +298,7 @@ class PlayState extends FlxState
 			wurst.setNextDirection(actor.x, actor.y, actor.direction);
 		}
 
-		if (actor.type == AUTO && actor.type == SEMI)
+		if (actor.type == AUTO || actor.type == SEMI)
 		{
 			actor.setNextDirection(wurst.direction);
 		}

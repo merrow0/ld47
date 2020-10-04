@@ -49,4 +49,6 @@ class Reg
 	public static var score:Int = 0;
 
 	public static var winCount:Int = 0;
+
+	public static var persistentDraw = true;
 }
