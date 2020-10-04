@@ -2,7 +2,14 @@ package;
 
 class Reg
 {
-	public static var levels:Array<String> = [AssetPaths.level1__tmx];
+	public static var levels:Array<String> = [
+		AssetPaths.level__tmx,
+		AssetPaths.level1__tmx,
+		AssetPaths.level2__tmx,
+		AssetPaths.level3__tmx
+	];
+
+	public static var levelIdx:Int = 0;
 
 	public static var sounds_abdrueck:Array<String> = [
 		AssetPaths.Abdrueck01__ogg,
@@ -33,7 +40,7 @@ class Reg
 
 	public static var sounds_spuelung:Array<String> = [AssetPaths.Spuelung__ogg];
 
-	public static var level:Int = 0;
-
 	public static var score:Int = 0;
+
+	public static var winCount:Int = 0;
 }

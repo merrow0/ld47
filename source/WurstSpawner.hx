@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.effects.chainable.FlxShakeEffect;
 import flixel.group.FlxGroup;
+import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 
 class WurstSpawner extends FlxSprite
@@ -27,6 +28,11 @@ class WurstSpawner extends FlxSprite
 		{
 			loadGraphic(AssetPaths.scheisshaus__png, false, 34, 47);
 		}
+		else
+		{
+			makeGraphic(16, 16, FlxColor.TRANSPARENT);
+		}
+
 		_state = state;
 		_minInitSpawnTime = minInitSpawnTime;
 		_maxInitSpawnTime = maxInitSpawnTime;

@@ -87,7 +87,7 @@ class PlayState extends FlxState
 		_up.addKey(UP, JUST_PRESSED).addKey(W, JUST_PRESSED);
 		_down.addKey(DOWN, JUST_PRESSED).addKey(S, JUST_PRESSED);
 
-		level = new TiledLevel(AssetPaths.level__tmx, this);
+		level = new TiledLevel(Reg.levels[Reg.levelIdx], this);
 
 		add(level.backgroundLayer);
 		add(level.wallLayer);
@@ -120,6 +120,7 @@ class PlayState extends FlxState
 		clickActorCheck();
 		keyboardCheck();
 		mouseCheck();
+		checkWin();
 	}
 
 	public function handleLoadSpawner(x:Float, y:Float, minInitTime:Int, maxInitTime:Int, minTime:Int, maxTime:Int, initDir:String):Void
@@ -157,8 +158,9 @@ class PlayState extends FlxState
 		actors.add(actor);
 	}
 
-	public function handleCameraStart(x:Int, y:Int)
+	public function handleCameraStart(x:Int, y:Int, winCount:Int)
 	{
+		Reg.winCount = winCount;
 		_initCamPos = new FlxPoint(x, y);
 	}
 
@@ -193,6 +195,14 @@ class PlayState extends FlxState
 		FlxG.overlap(wurstGroup, exits, onWurstHitsExit);
 		FlxG.overlap(wurstGroup, spawners, onWurstHitsSpawner);
 		FlxG.overlap(wurstGroup, onWurstHitsWurst, pixelPerfectProcess);
+	}
+
+	function checkWin():Void
+	{
+		if (Reg.winCount <= 0)
+		{
+			FlxG.switchState(new PlayState());
+		}
 	}
 
 	function clickActorCheck():Void
@@ -295,10 +305,10 @@ class PlayState extends FlxState
 
 	function onWurstHitsExit(wurst:Wurst, actor:FlxSprite):Void
 	{
-		if (!wurst.active)
-			return;
-
 		wurst.kill();
+
+		Reg.winCount--;
+		_hud.updateHUD();
 	}
 
 	function onWurstHitsSpawner(wurst:Wurst, spawner:WurstSpawner):Void
