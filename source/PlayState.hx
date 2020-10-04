@@ -124,9 +124,9 @@ class PlayState extends FlxState
 		mouseCheck();
 	}
 
-	public function handleLoadSpawner(x:Float, y:Float):Void
+	public function handleLoadSpawner(x:Float, y:Float, minTime:Int, maxTime:Int):Void
 	{
-		var spawner = new WurstSpawner(x, y, this);
+		var spawner = new WurstSpawner(x, y, minTime, maxTime, this);
 		spawners.add(spawner);
 	}
 

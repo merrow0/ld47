@@ -208,7 +208,9 @@ class TiledLevel extends TiledMap
 		switch (o.name.toLowerCase())
 		{
 			case "wurst_spawner":
-				state.handleLoadSpawner(x, y);
+				var minTime:Int = Std.parseInt(o.properties.get("min_spawntime"));
+				var maxTime:Int = Std.parseInt(o.properties.get("max_spawntime"));
+				state.handleLoadSpawner(x, y, minTime, maxTime);
 			case "flow_actor":
 				var initDir:String = null;
 				var avoidDir:String = null;
