@@ -9,6 +9,8 @@ import flixel.group.FlxGroup;
 import flixel.input.actions.FlxAction;
 import flixel.input.actions.FlxActionManager;
 import flixel.math.FlxPoint;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
 enum Direction
@@ -50,6 +52,7 @@ class PlayState extends FlxState
 	var _up:FlxActionDigital;
 	var _down:FlxActionDigital;
 	var _hud:HUD;
+	var _aboutToRestart:Bool = false;
 
 	override public function create()
 	{
@@ -203,7 +206,15 @@ class PlayState extends FlxState
 	{
 		if (Reg.winCount <= 0)
 		{
-			FlxG.switchState(new PlayState());
+			Reg.levelIdx++;
+			if (Reg.levelIdx < Reg.levels.length)
+			{
+				openSubState(new WinHUD());
+			}
+			else
+			{
+				// FlxG.switchState(new MenuState());
+			}
 		}
 	}
 
@@ -235,6 +246,9 @@ class PlayState extends FlxState
 
 	function mouseCheck():Void
 	{
+		if (_aboutToRestart)
+			return;
+
 		if (FlxG.mouse.justPressedRight)
 		{
 			grabbedPos = FlxG.mouse.getWorldPosition();
@@ -289,6 +303,10 @@ class PlayState extends FlxState
 			FlxG.sound.music.stop();
 			FlxG.switchState(new PlayState());
 		}
+		else if (FlxG.keys.justPressed.L)
+		{
+			Reg.winCount = 0;
+		}
 	}
 
 	function onWurstHitsActor(wurst:Wurst, actor:FlowActor):Void
@@ -306,6 +324,8 @@ class PlayState extends FlxState
 
 	function onWurstHitsWurst(wurst1:Wurst, wurst2:Wurst):Void
 	{
+		FlxG.sound.play(Reg.sounds_fluch[FlxG.random.int(0, Reg.sounds_fluch.length - 1)], 2, false);
+		FlxG.camera.flash(FlxColor.BROWN, 0.1);
 		wurst1.isImmovable = true;
 		wurst2.kill();
 	}
@@ -321,7 +341,25 @@ class PlayState extends FlxState
 	function onWurstHitsSpawner(wurst:Wurst, spawner:WurstSpawner):Void
 	{
 		wurst.kill();
-		// FlxG.switchState(new PlayState());
+
+		_aboutToRestart = true;
+
+		FlxG.camera.setScrollBounds(null, null, null, null);
+		FlxG.camera.focusOn(spawner.getMidpoint());
+		FlxG.camera.shake(0.01, 1);
+
+		FlxTween.tween(FlxG.camera, {zoom: 2}, 0.2, {
+			onComplete: function(t:FlxTween)
+			{
+				t.destroy();
+				FlxG.sound.music.stop();
+				FlxG.sound.play(Reg.sounds_fluch[FlxG.random.int(0, Reg.sounds_fluch.length - 1)], 2, false, function()
+				{
+					FlxG.switchState(new PlayState());
+				});
+			},
+			ease: FlxEase.quadOut
+		});
 	}
 
 	private static function pixelPerfectProcess(obj1:FlxBasic, obj2:FlxBasic):Bool

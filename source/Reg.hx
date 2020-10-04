@@ -6,7 +6,8 @@ class Reg
 		AssetPaths.level__tmx,
 		AssetPaths.level1__tmx,
 		AssetPaths.level2__tmx,
-		AssetPaths.level3__tmx
+		AssetPaths.level3__tmx,
+		AssetPaths.level4__tmx
 	];
 
 	public static var levelIdx:Int = 0;
@@ -42,6 +43,15 @@ class Reg
 		AssetPaths.Schmatz01__ogg, AssetPaths.Schmatz02__ogg, AssetPaths.Schmatz03__ogg, AssetPaths.Schmatz07__ogg, AssetPaths.Schmatz10__ogg,
 		AssetPaths.Schmatz11__ogg, AssetPaths.Schmatz12__ogg, AssetPaths.Schmatz13__ogg, AssetPaths.Schmatz15__ogg, AssetPaths.Schmatz16__ogg,
 		AssetPaths.Schmatz17__ogg
+	];
+
+	public static var sounds_fluch:Array<String> = [
+		AssetPaths.merda01__ogg,
+		AssetPaths.merda02__ogg,
+		AssetPaths.merda03__ogg,
+		AssetPaths.merda04__ogg,
+		AssetPaths.merda05nuovo__ogg,
+		AssetPaths.merda06__ogg
 	];
 
 	public static var sounds_spuelung:Array<String> = [AssetPaths.Spuelung__ogg];

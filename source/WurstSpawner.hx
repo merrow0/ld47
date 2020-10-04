@@ -62,7 +62,7 @@ class WurstSpawner extends FlxSprite
 		}
 		else
 		{
-			spawnWurst();
+			FlxG.sound.play(Reg.sounds_spuelung[FlxG.random.int(0, Reg.sounds_spuelung.length - 1)], 1, false, spawnWurst);
 		}
 	}
 
