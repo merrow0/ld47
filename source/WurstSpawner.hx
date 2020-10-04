@@ -21,7 +21,7 @@ class WurstSpawner extends FlxSprite
 		height = 16;
 		offset.set(8, 15);
 
-		new FlxTimer().start(FlxG.random.int(1, 3), spawn);
+		new FlxTimer().start(FlxG.random.int(2, 10), spawn);
 	}
 
 	override public function update(elapsed:Float):Void
@@ -34,6 +34,6 @@ class WurstSpawner extends FlxSprite
 		var wurst = new Wurst(x, y + 16);
 		wurst.direction = DOWN;
 		_state.wurstGroup.add(wurst);
-		f.start(FlxG.random.int(15, 20), spawn);
+		f.start(FlxG.random.int(10, 20), spawn);
 	}
 }
