@@ -13,12 +13,14 @@ class EscapeHUD extends FlxSubState
 {
 	var _screen:FlxSprite;
 	var _background:FlxSprite;
+	var _canClose:Bool;
 
-	public function new()
+	public function new(titleText:String, canClose:Bool)
 	{
 		super();
 
-		var title:FlxText = new FlxText(0, 0, 0, "PAUSED", 28);
+		_canClose = canClose;
+		var title:FlxText = new FlxText(0, 0, 0, titleText, 28);
 		title.screenCenter(FlxAxes.X);
 		title.y = 40;
 		title.scrollFactor.set();
@@ -35,7 +37,7 @@ class EscapeHUD extends FlxSubState
 	{
 		super.update(elapsed);
 
-		if (FlxG.keys.justPressed.ESCAPE)
+		if (FlxG.keys.justPressed.ESCAPE && _canClose)
 		{
 			close();
 		}

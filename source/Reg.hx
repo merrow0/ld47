@@ -56,9 +56,8 @@ class Reg
 
 	public static var sounds_spuelung:Array<String> = [AssetPaths.Spuelung__ogg];
 
-	public static var score:Int = 0;
-
 	public static var winCount:Int = 0;
+	public static var loseCount:Int = 0;
 
 	public static var persistentDraw = true;
 }

@@ -56,6 +56,12 @@ class WurstSpawner extends FlxSprite
 	{
 		_timer = f;
 
+		if (Reg.loseCount == 0 || Reg.winCount == 0)
+		{
+			_timer.cancel();
+			return;
+		}
+
 		if (_wurstDirection == DOWN)
 		{
 			FlxG.sound.play(Reg.sounds_abdrueck[FlxG.random.int(0, Reg.sounds_abdrueck.length - 1)], 1, false, preFlushWurst);

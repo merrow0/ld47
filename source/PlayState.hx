@@ -124,6 +124,7 @@ class PlayState extends FlxState
 		keyboardCheck();
 		mouseCheck();
 		checkWin();
+		checkLose();
 
 		persistentDraw = Reg.persistentDraw;
 	}
@@ -163,9 +164,11 @@ class PlayState extends FlxState
 		actors.add(actor);
 	}
 
-	public function handleCameraStart(x:Int, y:Int, winCount:Int)
+	public function handleCameraStart(x:Int, y:Int, winCount:Int, loseCount:Int)
 	{
 		Reg.winCount = winCount;
+		Reg.loseCount = loseCount;
+
 		_initCamPos = new FlxPoint(x, y);
 	}
 
@@ -209,12 +212,24 @@ class PlayState extends FlxState
 			Reg.levelIdx++;
 			if (Reg.levelIdx < Reg.levels.length)
 			{
+				FlxG.sound.music.stop();
+				FlxG.sound.play(AssetPaths.music_win__ogg, 1, false);
 				openSubState(new WinHUD());
 			}
 			else
 			{
 				// FlxG.switchState(new MenuState());
 			}
+		}
+	}
+
+	function checkLose():Void
+	{
+		if (Reg.loseCount <= 0)
+		{
+			FlxG.sound.music.stop();
+			FlxG.sound.play(AssetPaths.music_lose__ogg, 1, false);
+			openSubState(new EscapeHUD("YOU LOOSE", false));
 		}
 	}
 
@@ -294,7 +309,7 @@ class PlayState extends FlxState
 
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
-			openSubState(new EscapeHUD());
+			openSubState(new EscapeHUD("PAUSED", true));
 		}
 
 		// ***DEBUG ****
@@ -306,6 +321,10 @@ class PlayState extends FlxState
 		else if (FlxG.keys.justPressed.L)
 		{
 			Reg.winCount = 0;
+		}
+		else if (FlxG.keys.justPressed.O)
+		{
+			Reg.loseCount = 0;
 		}
 	}
 
@@ -324,8 +343,12 @@ class PlayState extends FlxState
 
 	function onWurstHitsWurst(wurst1:Wurst, wurst2:Wurst):Void
 	{
+		Reg.loseCount--;
+		_hud.updateHUD();
+
 		FlxG.sound.play(Reg.sounds_fluch[FlxG.random.int(0, Reg.sounds_fluch.length - 1)], 2, false);
 		FlxG.camera.flash(FlxColor.BROWN, 0.1);
+
 		wurst1.isImmovable = true;
 		wurst2.kill();
 	}

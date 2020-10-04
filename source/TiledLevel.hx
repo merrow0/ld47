@@ -250,7 +250,8 @@ class TiledLevel extends TiledMap
 				state.handleLoadExit(x, y);
 			case "camera_start":
 				var winCount:Int = Std.parseInt(o.properties.get("win_count"));
-				state.handleCameraStart(x, y, winCount);
+				var loseCount:Int = Std.parseInt(o.properties.get("lose_count"));
+				state.handleCameraStart(x, y, winCount, loseCount);
 		}
 	}
 
