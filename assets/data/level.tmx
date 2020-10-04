@@ -52,6 +52,7 @@
   <object id="96" name="exit" x="256" y="304" width="16" height="16"/>
   <object id="94" name="camera_start" x="199.334" y="154.833">
    <properties>
+    <property name="lose_count" type="int" value="5"/>
     <property name="win_count" type="int" value="10"/>
    </properties>
    <point/>
