@@ -243,6 +243,9 @@ class TiledLevel extends TiledMap
 						type = MANUAL;
 				}
 				state.handleFlowActor(x, y, type, initDir, avoidDir);
+			case "oneway":
+				var initDir:String = o.properties.get("oneway_dir");
+				state.handleFlowActor(x, y, ONEWAY, initDir, null);
 			case "exit":
 				state.handleLoadExit(x, y);
 			case "camera_start":

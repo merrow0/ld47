@@ -5,7 +5,6 @@ import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.effects.particles.FlxEmitter;
 import flixel.group.FlxGroup;
 import flixel.input.actions.FlxAction;
 import flixel.input.actions.FlxActionManager;
@@ -26,6 +25,7 @@ enum ActorType
 	AUTO;
 	SEMI;
 	MANUAL;
+	ONEWAY;
 }
 
 class PlayState extends FlxState
@@ -276,6 +276,11 @@ class PlayState extends FlxState
 			}
 		}
 
+		if (FlxG.keys.justPressed.ESCAPE)
+		{
+			openSubState(new EscapeHUD());
+		}
+
 		// ***DEBUG ****
 		if (FlxG.keys.justPressed.SPACE)
 		{
@@ -291,7 +296,7 @@ class PlayState extends FlxState
 			wurst.setNextDirection(actor.x, actor.y, actor.direction);
 		}
 
-		if (actor.type != MANUAL)
+		if (actor.type == AUTO && actor.type == SEMI)
 		{
 			actor.setNextDirection(wurst.direction);
 		}

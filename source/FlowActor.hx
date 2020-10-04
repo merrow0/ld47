@@ -36,10 +36,9 @@ class FlowActor extends FlxSprite
 				loadGraphic(AssetPaths.actor_semi__png, false, 16, 16);
 			case(MANUAL):
 				loadGraphic(AssetPaths.actor_manual__png, false, 16, 16);
+			case(ONEWAY):
+				loadGraphic(AssetPaths.one_way__png, false, 16, 16);
 		}
-
-		// setSize(11, 11);
-		// offset.set(2, 2);
 
 		direction = initDir;
 		avoidDirection = avoidDir;

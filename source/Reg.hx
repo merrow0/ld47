@@ -38,6 +38,12 @@ class Reg
 		AssetPaths.faucet_squeak_4__ogg
 	];
 
+	public static var kack_schmatz:Array<String> = [
+		AssetPaths.Schmatz01__ogg, AssetPaths.Schmatz02__ogg, AssetPaths.Schmatz03__ogg, AssetPaths.Schmatz07__ogg, AssetPaths.Schmatz10__ogg,
+		AssetPaths.Schmatz11__ogg, AssetPaths.Schmatz12__ogg, AssetPaths.Schmatz13__ogg, AssetPaths.Schmatz15__ogg, AssetPaths.Schmatz16__ogg,
+		AssetPaths.Schmatz17__ogg
+	];
+
 	public static var sounds_spuelung:Array<String> = [AssetPaths.Spuelung__ogg];
 
 	public static var score:Int = 0;

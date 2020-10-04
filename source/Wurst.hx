@@ -24,9 +24,6 @@ class Wurst extends FlxSprite
 
 		loadGraphic(AssetPaths.poop__png, false, 16, 16);
 		possibleDirections = new Array<Direction>();
-
-		// setSize(11, 11);
-		// offset.set(2, 2);
 	}
 
 	override public function update(elapsed:Float):Void
@@ -66,10 +63,12 @@ class Wurst extends FlxSprite
 	{
 		super.kill();
 
-		var emitter = new FlxEmitter(x, y);
+		FlxG.sound.play(Reg.kack_schmatz[FlxG.random.int(0, Reg.kack_schmatz.length - 1)], 0.7, false);
+
+		var emitter = new FlxEmitter(x + 8, y + 8);
 		FlxG.state.add(emitter);
 		emitter.launchMode = FlxEmitterMode.CIRCLE;
-		emitter.acceleration.set(-8, 800, -16, 1600);
+		emitter.acceleration.set(-8, 400, -16, 800);
 		emitter.makeParticles(5, 5, FlxColor.BROWN, 32).start(true, 0, 0);
 	}
 
