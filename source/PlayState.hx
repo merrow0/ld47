@@ -206,6 +206,10 @@ class PlayState extends FlxState
 
 				if (actor.type == MANUAL && mousePosGridX == actorGridX && mousePosGridY == actorGridY)
 				{
+					if (selectedActor != null)
+					{
+						selectedActor.isSelected = false;
+					}
 					selectedActor = actor;
 					selectedActor.isSelected = true;
 				}
