@@ -76,7 +76,7 @@
   </object>
   <object id="45" name="flow_actor" type="manuell" x="208" y="96" width="15.4737" height="16.0263"/>
   <object id="62" name="flow_actor" type="manuell" x="208" y="176" width="15.4737" height="16.0263"/>
-  <object id="47" name="camera_start" x="215.349" y="94.0766">
+  <object id="47" name="camera_start" x="215.683" y="124.077">
    <properties>
     <property name="win_count" type="int" value="10"/>
    </properties>

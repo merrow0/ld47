@@ -88,7 +88,7 @@
     <property name="min_spawntime" type="int" value="8"/>
    </properties>
   </object>
-  <object id="115" name="camera_start" x="208" y="100.667">
+  <object id="115" name="camera_start" x="217.333" y="185.334">
    <properties>
     <property name="win_count" type="int" value="20"/>
    </properties>
