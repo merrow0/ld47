@@ -34,5 +34,6 @@ class WurstSpawner extends FlxSprite
 		var wurst = new Wurst(x, y + 16);
 		wurst.direction = DOWN;
 		_state.wurstGroup.add(wurst);
+		f.start(FlxG.random.int(15, 20), spawn);
 	}
 }

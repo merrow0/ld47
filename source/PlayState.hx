@@ -262,6 +262,10 @@ class PlayState extends FlxState
 				}
 			}
 		}
+
+		// ***DEBUG ****
+		if (FlxG.keys.justPressed.SPACE)
+			FlxG.switchState(new PlayState());
 	}
 
 	function onWurstHitsActor(wurst:Wurst, actor:FlowActor):Void
