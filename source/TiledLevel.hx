@@ -1,5 +1,6 @@
 package;
 
+import PlayState.ActorType;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -231,7 +232,17 @@ class TiledLevel extends TiledMap
 					avoidDir = o.properties.get("avoid_dir");
 				}
 
-				state.handleFlowActor(x, y, o.type.toLowerCase() == "auto" ? AUTO : MANUAL, initDir, avoidDir);
+				var type:ActorType = AUTO;
+				switch (o.type.toLowerCase())
+				{
+					case "auto":
+						type = AUTO;
+					case "semi":
+						type = SEMI;
+					case "manuell":
+						type = MANUAL;
+				}
+				state.handleFlowActor(x, y, type, initDir, avoidDir);
 			case "exit":
 				state.handleLoadExit(x, y);
 			case "camera_start":

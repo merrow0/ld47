@@ -3,6 +3,7 @@ package;
 import PlayState.Direction;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.addons.effects.chainable.FlxShakeEffect;
 import flixel.group.FlxGroup;
 import flixel.util.FlxTimer;
 
@@ -16,10 +17,12 @@ class WurstSpawner extends FlxSprite
 	var _maxSpawnTime:Int;
 	var _wurstDirection:Direction;
 	var _timer:FlxTimer;
+	var _shake:FlxShakeEffect;
 
 	public function new(x:Float, y:Float, minInitSpawnTime:Int, maxInitSpawnTime:Int, minSpawnTime:Int, maxSpawnTime:Int, initDir:Direction, state:PlayState)
 	{
 		super(x, y);
+
 		loadGraphic(AssetPaths.scheisshaus__png, false, 34, 47);
 		_state = state;
 		_minInitSpawnTime = minInitSpawnTime;
@@ -46,12 +49,17 @@ class WurstSpawner extends FlxSprite
 
 		if (_wurstDirection == DOWN)
 		{
-			FlxG.sound.play(Reg.sounds_abdrueck[FlxG.random.int(0, Reg.sounds_abdrueck.length - 1)], 1, false, flushWurst);
+			FlxG.sound.play(Reg.sounds_abdrueck[FlxG.random.int(0, Reg.sounds_abdrueck.length - 1)], 1, false, preFlushWurst);
 		}
 		else
 		{
 			spawnWurst();
 		}
+	}
+
+	function preFlushWurst():Void
+	{
+		FlxG.sound.play(Reg.sounds_nach_abdrueck[FlxG.random.int(0, Reg.sounds_nach_abdrueck.length - 1)], 1, false, flushWurst);
 	}
 
 	function flushWurst():Void
