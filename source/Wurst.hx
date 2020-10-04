@@ -10,6 +10,7 @@ class Wurst extends FlxSprite
 
 	public var direction:Direction;
 	public var possibleDirections:Array<Direction>;
+	public var isImmovable = false;
 
 	var _nextDirection:Direction;
 	var _nextX:Float = 0.0;
@@ -26,6 +27,12 @@ class Wurst extends FlxSprite
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+
+		if (isImmovable)
+		{
+			velocity.set(0, 0);
+			return;
+		}
 
 		switch (direction)
 		{

@@ -11,7 +11,7 @@ class HUD extends FlxGroup
 	{
 		super();
 
-		zoomLevel = new FlxText(20, 20, 0, null, 14);
+		zoomLevel = new FlxText(20, 20, 0, "Scheissbollen: ", 14);
 		add(zoomLevel);
 	}
 }

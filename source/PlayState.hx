@@ -37,6 +37,7 @@ class PlayState extends FlxState
 	public var exit:FlxSprite;
 
 	var mapCam:FlxCamera;
+	var uiCam:FlxCamera;
 	var grabbedPos:FlxPoint = new FlxPoint(-1, -1);
 	var initialScroll:FlxPoint = new FlxPoint(0, 0);
 	var selectedActor:FlowActor;
@@ -69,8 +70,6 @@ class PlayState extends FlxState
 		wurstGroup = new FlxGroup();
 		exits = new FlxGroup();
 
-		_hud = new HUD();
-
 		_left = new FlxActionDigital();
 		_right = new FlxActionDigital();
 		_up = new FlxActionDigital();
@@ -89,13 +88,12 @@ class PlayState extends FlxState
 		level = new TiledLevel(AssetPaths.level__tmx, this);
 
 		add(level.backgroundLayer);
-		add(spawners);
 		add(level.wallLayer);
 		add(wurstGroup);
+		add(spawners);
 		add(level.foregroundLayer);
 		add(actors);
 		add(exits);
-		add(_hud);
 
 		// var scanlines = new FlxSprite(0, 0);
 		// scanlines.loadGraphic(AssetPaths.scanlines__png, false, FlxG.width, FlxG.height);
@@ -103,15 +101,27 @@ class PlayState extends FlxState
 		// scanlines.alpha = 0.1;
 		// add(scanlines);
 
-		mapCam = new FlxCamera(0, 0, FlxG.width, FlxG.height, 1);
+		mapCam = new FlxCamera(0, 0, FlxG.width, FlxG.height);
 		mapCam.scroll.set((FlxG.width * -0.5) + (level.tileWidth * level.tileWidth / 2), (FlxG.height * -0.5) + (level.tileHeight * level.tileHeight / 2));
 		mapCam.setScrollBoundsRect(0, 0, level.fullWidth, level.fullHeight, true);
 		mapCam.focusOn(_initCamPos);
-		// mapCam.antialiasing = true;
 		FlxG.cameras.add(mapCam);
+
+		_hud = new HUD();
+		_hud.cameras = [mapCam];
+		add(_hud);
+
+		// uiCam = new FlxCamera(0, 0, FlxG.width, 20);
+		// uiCam.bgColor = FlxColor.TRANSPARENT;
+		// uiCam.setScrollBounds(0, FlxG.width, 0, FlxG.height);
+		// uiCam.antialiasing = true;
+		// FlxG.cameras.add(uiCam);
 
 		// Init objects
 		actors.forEach((actor) -> actor.init());
+
+		FlxG.sound.playMusic(AssetPaths.sewer_shuffle_new__mp3, 0.8, true);
+		FlxG.sound.music.persist = false;
 	}
 
 	override public function update(elapsed:Float)
@@ -124,9 +134,14 @@ class PlayState extends FlxState
 		mouseCheck();
 	}
 
-	public function handleLoadSpawner(x:Float, y:Float, minTime:Int, maxTime:Int):Void
+	public function handleLoadSpawner(x:Float, y:Float, minTime:Int, maxTime:Int, initDir:String):Void
 	{
-		var spawner = new WurstSpawner(x, y, minTime, maxTime, this);
+		var initalDirection = Direction.DOWN;
+		if (initDir != null)
+		{
+			initalDirection = strToDirection(initDir);
+		}
+		var spawner = new WurstSpawner(x, y, minTime, maxTime, initalDirection, this);
 		spawners.add(spawner);
 	}
 
@@ -189,6 +204,7 @@ class PlayState extends FlxState
 		FlxG.overlap(wurstGroup, actors, onWurstHitsActor);
 		FlxG.overlap(wurstGroup, exits, onWurstHitsExit);
 		FlxG.overlap(wurstGroup, spawners, onWurstHitsSpawner);
+		FlxG.overlap(wurstGroup, onWurstHitsWurst);
 	}
 
 	function clickActorCheck():Void
@@ -264,7 +280,10 @@ class PlayState extends FlxState
 
 		// ***DEBUG ****
 		if (FlxG.keys.justPressed.SPACE)
+		{
+			FlxG.sound.music.stop();
 			FlxG.switchState(new PlayState());
+		}
 	}
 
 	function onWurstHitsActor(wurst:Wurst, actor:FlowActor):Void
@@ -275,6 +294,11 @@ class PlayState extends FlxState
 		}
 
 		actor.setNextDirection(wurst.direction);
+	}
+
+	function onWurstHitsWurst(wurst1:Wurst, wurst2:Wurst):Void
+	{
+		wurst1.isImmovable = wurst2.isImmovable = true;
 	}
 
 	function onWurstHitsExit(wurst:Wurst, actor:FlxSprite):Void
