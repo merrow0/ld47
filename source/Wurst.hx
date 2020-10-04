@@ -19,7 +19,7 @@ class Wurst extends FlxSprite
 	{
 		super(x, y);
 
-		loadGraphic(AssetPaths.wurst__png, false, 16, 16);
+		loadGraphic(AssetPaths.poop__png, false, 16, 16);
 		possibleDirections = new Array<Direction>();
 	}
 

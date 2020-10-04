@@ -8,6 +8,7 @@ import flixel.group.FlxGroup;
 import flixel.input.actions.FlxAction;
 import flixel.input.actions.FlxActionManager;
 import flixel.math.FlxPoint;
+import flixel.util.FlxColor;
 
 enum Direction
 {
@@ -39,6 +40,7 @@ class PlayState extends FlxState
 	var grabbedPos:FlxPoint = new FlxPoint(-1, -1);
 	var initialScroll:FlxPoint = new FlxPoint(0, 0);
 	var selectedActor:FlowActor;
+	var _initCamPos:FlxPoint;
 	var _left:FlxActionDigital;
 	var _right:FlxActionDigital;
 	var _up:FlxActionDigital;
@@ -73,6 +75,7 @@ class PlayState extends FlxState
 		_right = new FlxActionDigital();
 		_up = new FlxActionDigital();
 		_down = new FlxActionDigital();
+		_initCamPos = new FlxPoint(0, 0);
 
 		if (actions == null)
 			actions = FlxG.inputs.add(new FlxActionManager());
@@ -103,6 +106,7 @@ class PlayState extends FlxState
 		mapCam = new FlxCamera(0, 0, FlxG.width, FlxG.height, 1);
 		mapCam.scroll.set((FlxG.width * -0.5) + (level.tileWidth * level.tileWidth / 2), (FlxG.height * -0.5) + (level.tileHeight * level.tileHeight / 2));
 		mapCam.setScrollBoundsRect(0, 0, level.fullWidth, level.fullHeight, true);
+		mapCam.focusOn(_initCamPos);
 		// mapCam.antialiasing = true;
 		FlxG.cameras.add(mapCam);
 
@@ -129,14 +133,35 @@ class PlayState extends FlxState
 	public function handleLoadExit(x:Int, y:Int):Void
 	{
 		var exit = new FlxSprite(x, y);
-		exit.loadGraphic(AssetPaths.exit__png, false, 16, 16);
+		exit.makeGraphic(16, 16, FlxColor.TRANSPARENT);
 		exits.add(exit);
 	}
 
-	public function handleFlowActor(x:Int, y:Int, type:ActorType):Void
+	public function handleFlowActor(x:Int, y:Int, type:ActorType, initDir:String):Void
 	{
-		var actor = new FlowActor(x, y, type, this);
+		var initalDirection = Direction.NONE;
+		if (initDir != null)
+		{
+			switch (initDir.toLowerCase())
+			{
+				case "up":
+					initalDirection = UP;
+				case "down":
+					initalDirection = DOWN;
+				case "left":
+					initalDirection = LEFT;
+				case "right":
+					initalDirection = RIGHT;
+			}
+		}
+
+		var actor = new FlowActor(x, y, type, initalDirection, this);
 		actors.add(actor);
+	}
+
+	public function handleCameraStart(x:Int, y:Int)
+	{
+		_initCamPos = new FlxPoint(x, y);
 	}
 
 	function collisionCheck():Void
@@ -246,10 +271,7 @@ class PlayState extends FlxState
 			wurst.setNextDirection(actor.x, actor.y, actor.direction);
 		}
 
-		if (actor.type == AUTO)
-		{
-			actor.setNextDirection(wurst.direction);
-		}
+		actor.setNextDirection(wurst.direction);
 	}
 
 	function onWurstHitsExit(wurst:Wurst, actor:FlxSprite):Void

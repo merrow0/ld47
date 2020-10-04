@@ -210,9 +210,16 @@ class TiledLevel extends TiledMap
 			case "wurst_spawner":
 				state.handleLoadSpawner(x, y);
 			case "flow_actor":
-				state.handleFlowActor(x, y, o.type.toLowerCase() == "auto" ? AUTO : MANUAL);
+				var initDir:String = null;
+				if (o.properties.contains("init_dir"))
+				{
+					initDir = o.properties.get("init_dir");
+				}
+				state.handleFlowActor(x, y, o.type.toLowerCase() == "auto" ? AUTO : MANUAL, initDir);
 			case "exit":
 				state.handleLoadExit(x, y);
+			case "camera_start":
+				state.handleCameraStart(x, y);
 		}
 	}
 

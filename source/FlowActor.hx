@@ -12,7 +12,7 @@ class FlowActor extends FlxSprite
 {
 	public var type:ActorType;
 	public var possibleDirs:Array<Direction>;
-	public var direction:Direction;
+	public var direction:Direction = NONE;
 	public var isSelected:Bool;
 	public var nextDirSet:Bool;
 
@@ -20,7 +20,7 @@ class FlowActor extends FlxSprite
 	var _tween:FlxTween;
 	var _avoidNextDirection:Direction;
 
-	public function new(x:Float, y:Float, actorType:ActorType, state:PlayState)
+	public function new(x:Float, y:Float, actorType:ActorType, initDir:Direction, state:PlayState)
 	{
 		super(x, y);
 
@@ -34,6 +34,11 @@ class FlowActor extends FlxSprite
 			case(MANUAL):
 				loadGraphic(AssetPaths.actor_manual__png, false, 16, 16);
 		}
+
+		if (initDir != NONE)
+		{
+			direction = initDir;
+		}
 	}
 
 	public function init():Void
@@ -41,7 +46,10 @@ class FlowActor extends FlxSprite
 		possibleDirs = new Array<Direction>();
 		checkPossibleDirs();
 
-		direction = possibleDirs[FlxG.random.int(0, possibleDirs.length - 1)];
+		if (direction == NONE)
+		{
+			direction = possibleDirs[FlxG.random.int(0, possibleDirs.length - 1)];
+		}
 	}
 
 	override public function update(elapsed:Float):Void

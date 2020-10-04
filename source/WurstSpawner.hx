@@ -19,7 +19,7 @@ class WurstSpawner extends FlxSprite
 
 		width = 16;
 		height = 16;
-		offset.set(8, 30);
+		offset.set(8, 15);
 
 		new FlxTimer().start(FlxG.random.int(1, 3), spawn);
 	}
