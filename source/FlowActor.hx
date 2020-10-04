@@ -13,6 +13,7 @@ class FlowActor extends FlxSprite
 	public var type:ActorType;
 	public var possibleDirs:Array<Direction>;
 	public var direction:Direction = NONE;
+	public var avoidDirection:Direction = NONE;
 	public var isSelected:Bool;
 	public var nextDirSet:Bool;
 
@@ -20,7 +21,7 @@ class FlowActor extends FlxSprite
 	var _tween:FlxTween;
 	var _avoidNextDirection:Direction;
 
-	public function new(x:Float, y:Float, actorType:ActorType, initDir:Direction, state:PlayState)
+	public function new(x:Float, y:Float, actorType:ActorType, initDir:Direction, avoidDir:Direction, state:PlayState)
 	{
 		super(x, y);
 
@@ -35,10 +36,8 @@ class FlowActor extends FlxSprite
 				loadGraphic(AssetPaths.actor_manual__png, false, 16, 16);
 		}
 
-		if (initDir != NONE)
-		{
-			direction = initDir;
-		}
+		direction = initDir;
+		avoidDirection = avoidDir;
 	}
 
 	public function init():Void
@@ -65,13 +64,13 @@ class FlowActor extends FlxSprite
 		var tileX = Std.int(x / _state.level.tileWidth);
 		var tileY = Std.int(y / _state.level.tileHeight);
 
-		if (_state.level.collidableTileLayers[0].getTile(tileX, tileY - 1) == 0)
+		if (_state.level.collidableTileLayers[0].getTile(tileX, tileY - 1) == 0 && avoidDirection != UP)
 			possibleDirs.push(UP);
-		if (_state.level.collidableTileLayers[0].getTile(tileX, tileY + 1) == 0)
+		if (_state.level.collidableTileLayers[0].getTile(tileX, tileY + 1) == 0 && avoidDirection != DOWN)
 			possibleDirs.push(DOWN);
-		if (_state.level.collidableTileLayers[0].getTile(tileX - 1, tileY) == 0)
+		if (_state.level.collidableTileLayers[0].getTile(tileX - 1, tileY) == 0 && avoidDirection != LEFT)
 			possibleDirs.push(LEFT);
-		if (_state.level.collidableTileLayers[0].getTile(tileX + 1, tileY) == 0)
+		if (_state.level.collidableTileLayers[0].getTile(tileX + 1, tileY) == 0 && avoidDirection != RIGHT)
 			possibleDirs.push(RIGHT);
 	}
 

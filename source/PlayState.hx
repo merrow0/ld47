@@ -137,25 +137,20 @@ class PlayState extends FlxState
 		exits.add(exit);
 	}
 
-	public function handleFlowActor(x:Int, y:Int, type:ActorType, initDir:String):Void
+	public function handleFlowActor(x:Int, y:Int, type:ActorType, initDir:String, avoidDir:String):Void
 	{
 		var initalDirection = Direction.NONE;
 		if (initDir != null)
 		{
-			switch (initDir.toLowerCase())
-			{
-				case "up":
-					initalDirection = UP;
-				case "down":
-					initalDirection = DOWN;
-				case "left":
-					initalDirection = LEFT;
-				case "right":
-					initalDirection = RIGHT;
-			}
+			initalDirection = strToDirection(initDir);
+		}
+		var avoidDirection = Direction.NONE;
+		if (avoidDir != null)
+		{
+			avoidDirection = strToDirection(avoidDir);
 		}
 
-		var actor = new FlowActor(x, y, type, initalDirection, this);
+		var actor = new FlowActor(x, y, type, initalDirection, avoidDirection, this);
 		actors.add(actor);
 	}
 
@@ -289,5 +284,22 @@ class PlayState extends FlxState
 	function onWurstHitsSpawner(wurst:Wurst, spawner:WurstSpawner):Void
 	{
 		// FlxG.switchState(new PlayState());
+	}
+
+	function strToDirection(str:String):Direction
+	{
+		var ret:Direction = NONE;
+		switch (str.toLowerCase())
+		{
+			case "up":
+				ret = UP;
+			case "down":
+				ret = DOWN;
+			case "left":
+				ret = LEFT;
+			case "right":
+				ret = RIGHT;
+		}
+		return ret;
 	}
 }

@@ -211,11 +211,16 @@ class TiledLevel extends TiledMap
 				state.handleLoadSpawner(x, y);
 			case "flow_actor":
 				var initDir:String = null;
+				var avoidDir:String = null;
 				if (o.properties.contains("init_dir"))
 				{
 					initDir = o.properties.get("init_dir");
 				}
-				state.handleFlowActor(x, y, o.type.toLowerCase() == "auto" ? AUTO : MANUAL, initDir);
+				if (o.properties.contains("avoid_dir"))
+				{
+					avoidDir = o.properties.get("avoid_dir");
+				}
+				state.handleFlowActor(x, y, o.type.toLowerCase() == "auto" ? AUTO : MANUAL, initDir, avoidDir);
 			case "exit":
 				state.handleLoadExit(x, y);
 			case "camera_start":
