@@ -43,6 +43,7 @@ class PlayState extends FlxState
 	var _right:FlxActionDigital;
 	var _up:FlxActionDigital;
 	var _down:FlxActionDigital;
+	var _hud:HUD;
 
 	override public function create()
 	{
@@ -65,6 +66,8 @@ class PlayState extends FlxState
 		actors = new FlxTypedGroup<FlowActor>();
 		wurstGroup = new FlxGroup();
 		exits = new FlxGroup();
+
+		_hud = new HUD();
 
 		_left = new FlxActionDigital();
 		_right = new FlxActionDigital();
@@ -89,6 +92,13 @@ class PlayState extends FlxState
 		add(level.foregroundLayer);
 		add(actors);
 		add(exits);
+		add(_hud);
+
+		// var scanlines = new FlxSprite(0, 0);
+		// scanlines.loadGraphic(AssetPaths.scanlines__png, false, FlxG.width, FlxG.height);
+		// scanlines.scrollFactor.set(0, 0);
+		// scanlines.alpha = 0.1;
+		// add(scanlines);
 
 		mapCam = new FlxCamera(0, 0, FlxG.width, FlxG.height, 1);
 		mapCam.scroll.set((FlxG.width * -0.5) + (level.tileWidth * level.tileWidth / 2), (FlxG.height * -0.5) + (level.tileHeight * level.tileHeight / 2));
@@ -158,6 +168,7 @@ class PlayState extends FlxState
 
 		FlxG.overlap(wurstGroup, actors, onWurstHitsActor);
 		FlxG.overlap(wurstGroup, exits, onWurstHitsExit);
+		FlxG.overlap(wurstGroup, spawners, onWurstHitsSpawner);
 	}
 
 	function clickActorCheck():Void
@@ -194,6 +205,8 @@ class PlayState extends FlxState
 			var mousePosChange:FlxPoint = FlxG.mouse.getWorldPosition(mapCam).subtractPoint(grabbedPos);
 			mapCam.scroll.subtractPoint(mousePosChange);
 		}
+		// mapCam.zoom += 0.2 * FlxG.mouse.wheel / 100;
+		// _hud.zoomLevel.text = Std.string(mapCam.zoom);
 	}
 
 	function keyboardCheck():Void
@@ -245,5 +258,10 @@ class PlayState extends FlxState
 			return;
 
 		wurst.kill();
+	}
+
+	function onWurstHitsSpawner(wurst:Wurst, spawner:WurstSpawner):Void
+	{
+		// FlxG.switchState(new PlayState());
 	}
 }

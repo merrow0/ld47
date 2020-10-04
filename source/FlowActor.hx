@@ -108,7 +108,7 @@ class FlowActor extends FlxSprite
 		if (!nextDirSet)
 		{
 			_avoidNextDirection = avoidNextDir;
-			new FlxTimer().start(1.5, changeDirection);
+			new FlxTimer().start(1.3, changeDirection);
 			nextDirSet = true;
 		}
 	}

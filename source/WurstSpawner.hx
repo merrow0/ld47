@@ -31,7 +31,7 @@ class WurstSpawner extends FlxSprite
 
 	public function spawn(f:FlxTimer):Void
 	{
-		var wurst = new Wurst(x, y + 10);
+		var wurst = new Wurst(x, y + 16);
 		wurst.direction = DOWN;
 		_state.wurstGroup.add(wurst);
 	}
