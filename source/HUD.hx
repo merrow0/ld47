@@ -1,9 +1,9 @@
 package;
 
-import flixel.group.FlxGroup;
+import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
 
-class HUD extends FlxGroup
+class HUD extends FlxSpriteGroup
 {
 	public var zoomLevel:FlxText;
 

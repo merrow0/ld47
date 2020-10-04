@@ -101,14 +101,13 @@ class PlayState extends FlxState
 		// scanlines.alpha = 0.1;
 		// add(scanlines);
 
-		mapCam = new FlxCamera(0, 0, FlxG.width, FlxG.height);
-		mapCam.scroll.set((FlxG.width * -0.5) + (level.tileWidth * level.tileWidth / 2), (FlxG.height * -0.5) + (level.tileHeight * level.tileHeight / 2));
-		mapCam.setScrollBoundsRect(0, 0, level.fullWidth, level.fullHeight, true);
-		mapCam.focusOn(_initCamPos);
-		FlxG.cameras.add(mapCam);
+		FlxG.camera.scroll.set((FlxG.width * -0.5) + (level.tileWidth * level.tileWidth / 2),
+			(FlxG.height * -0.5) + (level.tileHeight * level.tileHeight / 2));
+		FlxG.camera.setScrollBoundsRect(0, 0, level.fullWidth, level.fullHeight, true);
+		FlxG.camera.focusOn(_initCamPos);
 
 		_hud = new HUD();
-		_hud.cameras = [mapCam];
+		_hud.scrollFactor.set(0, 0);
 		add(_hud);
 
 		// uiCam = new FlxCamera(0, 0, FlxG.width, 20);
@@ -120,7 +119,7 @@ class PlayState extends FlxState
 		// Init objects
 		actors.forEach((actor) -> actor.init());
 
-		FlxG.sound.playMusic(AssetPaths.sewer_shuffle_new__mp3, 0.8, true);
+		FlxG.sound.playMusic(AssetPaths.sewer_shuffle_new__mp3, 0.7, true);
 		FlxG.sound.music.persist = false;
 	}
 
@@ -134,14 +133,14 @@ class PlayState extends FlxState
 		mouseCheck();
 	}
 
-	public function handleLoadSpawner(x:Float, y:Float, minTime:Int, maxTime:Int, initDir:String):Void
+	public function handleLoadSpawner(x:Float, y:Float, minInitTime:Int, maxInitTime:Int, minTime:Int, maxTime:Int, initDir:String):Void
 	{
 		var initalDirection = Direction.DOWN;
 		if (initDir != null)
 		{
 			initalDirection = strToDirection(initDir);
 		}
-		var spawner = new WurstSpawner(x, y, minTime, maxTime, initalDirection, this);
+		var spawner = new WurstSpawner(x, y, minInitTime, maxInitTime, minTime, maxTime, initalDirection, this);
 		spawners.add(spawner);
 	}
 
@@ -237,13 +236,13 @@ class PlayState extends FlxState
 	{
 		if (FlxG.mouse.justPressedRight)
 		{
-			grabbedPos = FlxG.mouse.getWorldPosition(mapCam);
-			initialScroll = mapCam.scroll;
+			grabbedPos = FlxG.mouse.getWorldPosition();
+			initialScroll = FlxG.camera.scroll;
 		}
 		if (FlxG.mouse.pressedRight)
 		{
-			var mousePosChange:FlxPoint = FlxG.mouse.getWorldPosition(mapCam).subtractPoint(grabbedPos);
-			mapCam.scroll.subtractPoint(mousePosChange);
+			var mousePosChange:FlxPoint = FlxG.mouse.getWorldPosition().subtractPoint(grabbedPos);
+			FlxG.camera.scroll.subtractPoint(mousePosChange);
 		}
 		// mapCam.zoom += 0.2 * FlxG.mouse.wheel / 100;
 		// _hud.zoomLevel.text = Std.string(mapCam.zoom);
