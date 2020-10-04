@@ -50,8 +50,16 @@
  <objectgroup id="2" name="objects">
   <object id="4" name="exit" x="368" y="208" width="16" height="16"/>
   <object id="40" name="exit" x="32" y="208" width="16" height="16"/>
-  <object id="39" name="flow_actor" type="auto" x="96" y="96" width="15.4737" height="16.0263"/>
-  <object id="42" name="flow_actor" type="auto" x="304" y="96" width="15.4737" height="16.0263"/>
+  <object id="39" name="flow_actor" type="auto" x="96" y="96" width="15.4737" height="16.0263">
+   <properties>
+    <property name="init_dir" value="left"/>
+   </properties>
+  </object>
+  <object id="42" name="flow_actor" type="auto" x="304" y="96" width="15.4737" height="16.0263">
+   <properties>
+    <property name="init_dir" value="right"/>
+   </properties>
+  </object>
   <object id="43" name="flow_actor" type="auto" x="64" y="176" width="15.4737" height="16.0263"/>
   <object id="44" name="flow_actor" type="auto" x="336" y="176" width="15.4737" height="16.0263"/>
   <object id="28" name="flow_actor" type="manuell" x="208" y="96" width="15.4737" height="16.0263"/>
