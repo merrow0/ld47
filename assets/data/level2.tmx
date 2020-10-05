@@ -66,7 +66,7 @@
   <object id="105" name="flow_actor" type="semi" x="128" y="208" width="15.4737" height="16.0263">
    <properties>
     <property name="avoid_dir" value="up"/>
-    <property name="init_dir" value="left"/>
+    <property name="init_dir" value="right"/>
    </properties>
   </object>
   <object id="106" name="flow_actor" type="semi" x="256" y="208" width="15.4737" height="16.0263">
