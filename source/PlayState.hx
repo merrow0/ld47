@@ -97,7 +97,14 @@ class PlayState extends TiledState
 
 		actors.forEach((actor) -> actor.init());
 
-		FlxG.sound.playMusic(AssetPaths.sewer_shuffle_new__ogg, 0.7, true);
+		if (Reg.levelIdx < 3)
+		{
+			FlxG.sound.playMusic(AssetPaths.sewer_shuffle_part1__ogg, 0.7, true);
+		}
+		else
+		{
+			FlxG.sound.playMusic(AssetPaths.sewer_shuffle_part2__ogg, 0.7, true);
+		}
 		FlxG.sound.music.persist = false;
 	}
 
@@ -137,7 +144,7 @@ class PlayState extends TiledState
 			}
 			else
 			{
-				// FlxG.switchState(new MenuState());
+				FlxG.switchState(new MenuState());
 			}
 		}
 	}
@@ -266,21 +273,6 @@ class PlayState extends TiledState
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			openSubState(new EscapeHUD("PAUSED", true));
-		}
-
-		// ***DEBUG ****
-		if (FlxG.keys.justPressed.SPACE)
-		{
-			FlxG.sound.music.stop();
-			FlxG.switchState(new PlayState());
-		}
-		else if (FlxG.keys.justPressed.L)
-		{
-			Reg.winCount = 0;
-		}
-		else if (FlxG.keys.justPressed.O)
-		{
-			Reg.loseCount = 0;
 		}
 	}
 
