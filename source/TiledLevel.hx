@@ -32,7 +32,7 @@ class TiledLevel extends TiledMap
 
 	public var imagesLayer:FlxGroup;
 
-	public function new(tiledLevel:FlxTiledMapAsset, state:PlayState)
+	public function new(tiledLevel:FlxTiledMapAsset, state:TiledState)
 	{
 		super(tiledLevel);
 
@@ -129,7 +129,7 @@ class TiledLevel extends TiledMap
 		return special;
 	}
 
-	public function loadObjects(state:PlayState)
+	public function loadObjects(state:TiledState)
 	{
 		for (layer in layers)
 		{
@@ -197,7 +197,7 @@ class TiledLevel extends TiledMap
 		backgroundLayer.add(decoSprite);
 	}
 
-	function loadObject(state:PlayState, o:TiledObject, g:TiledObjectLayer, group:FlxGroup)
+	function loadObject(state:TiledState, o:TiledObject, g:TiledObjectLayer, group:FlxGroup)
 	{
 		var x:Int = o.x;
 		var y:Int = o.y;

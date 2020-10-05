@@ -17,11 +17,11 @@ class FlowActor extends FlxSprite
 	public var isSelected:Bool;
 	public var nextDirSet:Bool;
 
-	var _state:PlayState;
+	var _state:TiledState;
 	var _tween:FlxTween;
 	var _avoidNextDirection:Direction;
 
-	public function new(x:Float, y:Float, actorType:ActorType, initDir:Direction, avoidDir:Direction, state:PlayState)
+	public function new(x:Float, y:Float, actorType:ActorType, initDir:Direction, avoidDir:Direction, state:TiledState)
 	{
 		super(x, y);
 
@@ -116,7 +116,10 @@ class FlowActor extends FlxSprite
 
 	public function setDirection(dir:Direction)
 	{
-		FlxG.sound.play(Reg.sounds_actors[FlxG.random.int(0, Reg.sounds_actors.length - 1)], 0.7, false);
+		if (dir != direction)
+		{
+			FlxG.sound.play(Reg.sounds_actors[FlxG.random.int(0, Reg.sounds_actors.length - 1)], 0.7, false);
+		}
 		direction = dir;
 	}
 
@@ -133,9 +136,17 @@ class FlowActor extends FlxSprite
 	public function changeDirection(f:FlxTimer):Void
 	{
 		var nextDirection = _avoidNextDirection;
-		while (nextDirection == _avoidNextDirection)
+
+		if (possibleDirs.length == 1)
 		{
-			nextDirection = possibleDirs[FlxG.random.int(0, possibleDirs.length - 1)];
+			nextDirection = possibleDirs[0];
+		}
+		else if (possibleDirs.length > 1)
+		{
+			while (nextDirection == _avoidNextDirection)
+			{
+				nextDirection = possibleDirs[FlxG.random.int(0, possibleDirs.length - 1)];
+			}
 		}
 
 		setDirection(nextDirection);

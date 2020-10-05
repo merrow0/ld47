@@ -4,7 +4,6 @@ import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.input.actions.FlxAction;
 import flixel.input.actions.FlxActionManager;
@@ -30,23 +29,15 @@ enum ActorType
 	ONEWAY;
 }
 
-class PlayState extends FlxState
+class PlayState extends TiledState
 {
 	static var actions:FlxActionManager;
-
-	public var level:TiledLevel;
-	public var wurstGroup:FlxGroup;
-	public var spawners:FlxTypedGroup<WurstSpawner>;
-	public var exits:FlxGroup;
-	public var actors:FlxTypedGroup<FlowActor>;
-	public var exit:FlxSprite;
 
 	var mapCam:FlxCamera;
 	var uiCam:FlxCamera;
 	var grabbedPos:FlxPoint = new FlxPoint(-1, -1);
 	var initialScroll:FlxPoint = new FlxPoint(0, 0);
 	var selectedActor:FlowActor;
-	var _initCamPos:FlxPoint;
 	var _left:FlxActionDigital;
 	var _right:FlxActionDigital;
 	var _up:FlxActionDigital;
@@ -69,11 +60,6 @@ class PlayState extends FlxState
 
 		// // Load the sprite's graphic to the cursor
 		// FlxG.mouse.load(mouseSprite.pixels);
-
-		spawners = new FlxTypedGroup<WurstSpawner>();
-		actors = new FlxTypedGroup<FlowActor>();
-		wurstGroup = new FlxGroup();
-		exits = new FlxGroup();
 
 		_left = new FlxActionDigital();
 		_right = new FlxActionDigital();
@@ -119,7 +105,7 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 
-		collisionCheck();
+		overlapCheck();
 		clickActorCheck();
 		keyboardCheck();
 		mouseCheck();
@@ -129,77 +115,10 @@ class PlayState extends FlxState
 		persistentDraw = Reg.persistentDraw;
 	}
 
-	public function handleLoadSpawner(x:Float, y:Float, minInitTime:Int, maxInitTime:Int, minTime:Int, maxTime:Int, initDir:String):Void
+	override function overlapCheck():Void
 	{
-		var initalDirection = Direction.DOWN;
-		if (initDir != null)
-		{
-			initalDirection = strToDirection(initDir);
-		}
-		var spawner = new WurstSpawner(x, y, minInitTime, maxInitTime, minTime, maxTime, initalDirection, this);
-		spawners.add(spawner);
-	}
+		super.overlapCheck();
 
-	public function handleLoadExit(x:Int, y:Int):Void
-	{
-		var exit = new FlxSprite(x, y);
-		exit.makeGraphic(16, 16, FlxColor.TRANSPARENT);
-		exits.add(exit);
-	}
-
-	public function handleFlowActor(x:Int, y:Int, type:ActorType, initDir:String, avoidDir:String):Void
-	{
-		var initalDirection = Direction.NONE;
-		if (initDir != null)
-		{
-			initalDirection = strToDirection(initDir);
-		}
-		var avoidDirection = Direction.NONE;
-		if (avoidDir != null)
-		{
-			avoidDirection = strToDirection(avoidDir);
-		}
-
-		var actor = new FlowActor(x, y, type, initalDirection, avoidDirection, this);
-		actors.add(actor);
-	}
-
-	public function handleCameraStart(x:Int, y:Int, winCount:Int, loseCount:Int)
-	{
-		Reg.winCount = winCount;
-		Reg.loseCount = loseCount;
-
-		_initCamPos = new FlxPoint(x, y);
-	}
-
-	function collisionCheck():Void
-	{
-		wurstGroup.forEachAlive((it) ->
-		{
-			var wurst:Wurst = cast(it, Wurst);
-			if (level.collideWithLevel(wurst))
-			{
-				var possibleDirs:Array<Direction> = new Array<Direction>();
-				var tileX = Std.int(wurst.x / level.tileWidth);
-				var tileY = Std.int(wurst.y / level.tileHeight);
-
-				if (level.collidableTileLayers[0].getTile(tileX, tileY - 1) == 0 && wurst.direction != DOWN)
-					possibleDirs.push(UP);
-				if (level.collidableTileLayers[0].getTile(tileX, tileY + 1) == 0 && wurst.direction != UP)
-					possibleDirs.push(DOWN);
-				if (level.collidableTileLayers[0].getTile(tileX - 1, tileY) == 0 && wurst.direction != RIGHT)
-					possibleDirs.push(LEFT);
-				if (level.collidableTileLayers[0].getTile(tileX + 1, tileY) == 0 && wurst.direction != LEFT)
-					possibleDirs.push(RIGHT);
-
-				if (possibleDirs.length == 1)
-				{
-					wurst.direction = possibleDirs[0];
-				}
-			}
-		});
-
-		FlxG.overlap(wurstGroup, actors, onWurstHitsActor);
 		FlxG.overlap(wurstGroup, exits, onWurstHitsExit);
 		FlxG.overlap(wurstGroup, spawners, onWurstHitsSpawner);
 		FlxG.overlap(wurstGroup, onWurstHitsWurst, pixelPerfectProcess);
@@ -229,7 +148,7 @@ class PlayState extends FlxState
 		{
 			FlxG.sound.music.stop();
 			FlxG.sound.play(AssetPaths.music_lose__ogg, 1, false);
-			openSubState(new EscapeHUD("YOU LOOSE", false));
+			openSubState(new EscapeHUD("YOU LOSE", false));
 		}
 	}
 
@@ -328,19 +247,6 @@ class PlayState extends FlxState
 		}
 	}
 
-	function onWurstHitsActor(wurst:Wurst, actor:FlowActor):Void
-	{
-		if (wurst.direction != actor.direction)
-		{
-			wurst.setNextDirection(actor.x, actor.y, actor.direction);
-		}
-
-		if (actor.type == AUTO || actor.type == SEMI)
-		{
-			actor.setNextDirection(wurst.direction);
-		}
-	}
-
 	function onWurstHitsWurst(wurst1:Wurst, wurst2:Wurst):Void
 	{
 		Reg.loseCount--;
@@ -350,20 +256,23 @@ class PlayState extends FlxState
 		FlxG.camera.flash(FlxColor.BROWN, 0.1);
 
 		wurst1.isImmovable = true;
-		wurst2.kill();
+		wurst2.killWurst(false);
 	}
 
 	function onWurstHitsExit(wurst:Wurst, actor:FlxSprite):Void
 	{
-		wurst.kill();
+		if (wurst.active)
+		{
+			Reg.winCount--;
+			_hud.updateHUD();
+		}
 
-		Reg.winCount--;
-		_hud.updateHUD();
+		wurst.killWurst(true);
 	}
 
 	function onWurstHitsSpawner(wurst:Wurst, spawner:WurstSpawner):Void
 	{
-		wurst.kill();
+		wurst.killWurst(false);
 
 		_aboutToRestart = true;
 
@@ -395,22 +304,5 @@ class PlayState extends FlxState
 				return true;
 		}
 		return false;
-	}
-
-	function strToDirection(str:String):Direction
-	{
-		var ret:Direction = NONE;
-		switch (str.toLowerCase())
-		{
-			case "up":
-				ret = UP;
-			case "down":
-				ret = DOWN;
-			case "left":
-				ret = LEFT;
-			case "right":
-				ret = RIGHT;
-		}
-		return ret;
 	}
 }

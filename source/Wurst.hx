@@ -4,6 +4,8 @@ import PlayState.Direction;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.effects.particles.FlxEmitter;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
 class Wurst extends FlxSprite
@@ -59,17 +61,35 @@ class Wurst extends FlxSprite
 		}
 	}
 
-	override function kill()
+	public function killWurst(hitsExit:Bool):Void
 	{
-		super.kill();
+		if (!active)
+			return;
 
-		FlxG.sound.play(Reg.kack_schmatz[FlxG.random.int(0, Reg.kack_schmatz.length - 1)], 0.7, false);
+		if (hitsExit)
+		{
+			active = false;
+			FlxTween.tween(scale, {x: 0, y: 0}, 1, {
+				ease: FlxEase.quadInOut,
+				type: FlxTweenType.ONESHOT,
+				onComplete: (_) ->
+				{
+					kill();
+				}
+			});
+		}
+		else
+		{
+			kill();
 
-		var emitter = new FlxEmitter(x + 8, y + 8);
-		FlxG.state.add(emitter);
-		emitter.launchMode = FlxEmitterMode.CIRCLE;
-		emitter.acceleration.set(-8, 400, -16, 800);
-		emitter.makeParticles(5, 5, FlxColor.BROWN, 32).start(true, 0, 0);
+			FlxG.sound.play(Reg.kack_schmatz[FlxG.random.int(0, Reg.kack_schmatz.length - 1)], 0.7, false);
+
+			var emitter = new FlxEmitter(x + 8, y + 8);
+			FlxG.state.add(emitter);
+			emitter.launchMode = FlxEmitterMode.CIRCLE;
+			emitter.acceleration.set(-8, 400, -16, 800);
+			emitter.makeParticles(5, 5, FlxColor.BROWN, 32).start(true, 0, 0);
+		}
 	}
 
 	public function setNextDirection(nextX:Float, nextY:Float, newDir:Direction)

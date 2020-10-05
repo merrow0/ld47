@@ -18,17 +18,17 @@ class WinHUD extends FlxSubState
 	{
 		super();
 
-		var title:FlxText = new FlxText(0, 0, 0, "YOU WIN", 28);
+		var title:FlxText = new FlxText(0, 0, 0, "YOU WIN", 23);
 		title.screenCenter(FlxAxes.X);
 		title.y = 40;
 		title.scrollFactor.set();
 		title.setBorderStyle(OUTLINE, FlxColor.BROWN, 5);
 		title.alpha = 0;
-		FlxTween.tween(title, {alpha: 1}, 2);
+		FlxTween.tween(title, {alpha: 1}, 1);
 		add(title);
 
 		add(new FlxButton(FlxG.camera.width / 2 - 45, FlxG.camera.height / 2 - 15, "Next Level", click_restart));
-		add(new FlxButton(FlxG.camera.width / 2 - 45, FlxG.camera.height / 2 + 15, "Quit", click_quit));
+		add(new FlxButton(FlxG.camera.width / 2 - 45, FlxG.camera.height / 2 + 15, "Menu", click_quit));
 	}
 
 	override public function update(elapsed:Float):Void
@@ -54,6 +54,6 @@ class WinHUD extends FlxSubState
 
 	function actuallyQuit():Void
 	{
-		// FlxG.switchState(new MenuState());
+		FlxG.switchState(new MenuState());
 	}
 }

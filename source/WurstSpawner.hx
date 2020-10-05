@@ -11,7 +11,7 @@ import flixel.util.FlxTimer;
 class WurstSpawner extends FlxSprite
 {
 	var _wurstGrp:FlxTypedGroup<Wurst>;
-	var _state:PlayState;
+	var _state:TiledState;
 	var _minInitSpawnTime:Int;
 	var _maxInitSpawnTime:Int;
 	var _minSpawnTime:Int;
@@ -20,7 +20,7 @@ class WurstSpawner extends FlxSprite
 	var _timer:FlxTimer;
 	var _shake:FlxShakeEffect;
 
-	public function new(x:Float, y:Float, minInitSpawnTime:Int, maxInitSpawnTime:Int, minSpawnTime:Int, maxSpawnTime:Int, initDir:Direction, state:PlayState)
+	public function new(x:Float, y:Float, minInitSpawnTime:Int, maxInitSpawnTime:Int, minSpawnTime:Int, maxSpawnTime:Int, initDir:Direction, state:TiledState)
 	{
 		super(x, y);
 
@@ -68,7 +68,7 @@ class WurstSpawner extends FlxSprite
 		}
 		else
 		{
-			FlxG.sound.play(Reg.sounds_spuelung[FlxG.random.int(0, Reg.sounds_spuelung.length - 1)], 1, false, spawnWurst);
+			FlxG.sound.play(Reg.sounds_spuelung[FlxG.random.int(0, Reg.sounds_spuelung.length - 1)], 0.7, false, spawnWurst);
 		}
 	}
 
@@ -79,7 +79,7 @@ class WurstSpawner extends FlxSprite
 
 	function flushWurst():Void
 	{
-		FlxG.sound.play(Reg.sounds_spuelung[FlxG.random.int(0, Reg.sounds_spuelung.length - 1)], 1, false, spawnWurst);
+		FlxG.sound.play(Reg.sounds_spuelung[FlxG.random.int(0, Reg.sounds_spuelung.length - 1)], 0.7, false, spawnWurst);
 	}
 
 	function spawnWurst():Void
