@@ -68,7 +68,7 @@ class WurstSpawner extends FlxSprite
 		}
 		else
 		{
-			FlxG.sound.play(Reg.sounds_spuelung[FlxG.random.int(0, Reg.sounds_spuelung.length - 1)], 0.7, false, spawnWurst);
+			FlxG.sound.play(AssetPaths.pupus_tangens__ogg, 0.7, false, spawnWurst);
 		}
 	}
 

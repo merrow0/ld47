@@ -156,6 +156,8 @@ class PlayState extends TiledState
 	{
 		if (FlxG.mouse.justPressed)
 		{
+			var actorSelected:Bool = false;
+
 			actors.forEach((actor) ->
 			{
 				var mousePos = FlxG.mouse.getWorldPosition(mapCam);
@@ -167,6 +169,8 @@ class PlayState extends TiledState
 
 				if (actor.type != AUTO && mousePosGridX == actorGridX && mousePosGridY == actorGridY)
 				{
+					actorSelected = true;
+
 					if (selectedActor != null)
 					{
 						selectedActor.isSelected = false;
@@ -175,6 +179,11 @@ class PlayState extends TiledState
 					selectedActor.isSelected = true;
 				}
 			});
+
+			if (!actorSelected && selectedActor != null)
+			{
+				selectedActor.isSelected = false;
+			}
 		}
 	}
 
@@ -203,25 +212,53 @@ class PlayState extends TiledState
 		{
 			if (selectedActor.isSelected == true)
 			{
-				if (_left.triggered && selectedActor.canChangeToDirection(LEFT))
+				if (_left.triggered)
 				{
-					selectedActor.setDirection(LEFT);
-					selectedActor.isSelected = false;
+					if (selectedActor.canChangeToDirection(LEFT))
+					{
+						selectedActor.setDirection(LEFT);
+						selectedActor.isSelected = false;
+					}
+					else
+					{
+						FlxG.sound.play(AssetPaths.blocked_valve__ogg, 1, false);
+					}
 				}
-				else if (_right.triggered && selectedActor.canChangeToDirection(RIGHT))
+				else if (_right.triggered)
 				{
-					selectedActor.setDirection(RIGHT);
-					selectedActor.isSelected = false;
+					if (selectedActor.canChangeToDirection(RIGHT))
+					{
+						selectedActor.setDirection(RIGHT);
+						selectedActor.isSelected = false;
+					}
+					else
+					{
+						FlxG.sound.play(AssetPaths.blocked_valve__ogg, 1, false);
+					}
 				}
-				else if (_up.triggered && selectedActor.canChangeToDirection(UP))
+				else if (_up.triggered)
 				{
-					selectedActor.setDirection(UP);
-					selectedActor.isSelected = false;
+					if (selectedActor.canChangeToDirection(UP))
+					{
+						selectedActor.setDirection(UP);
+						selectedActor.isSelected = false;
+					}
+					else
+					{
+						FlxG.sound.play(AssetPaths.blocked_valve__ogg, 1, false);
+					}
 				}
-				else if (_down.triggered && selectedActor.canChangeToDirection(DOWN))
+				else if (_down.triggered)
 				{
-					selectedActor.setDirection(DOWN);
-					selectedActor.isSelected = false;
+					if (selectedActor.canChangeToDirection(DOWN))
+					{
+						selectedActor.setDirection(DOWN);
+						selectedActor.isSelected = false;
+					}
+					else
+					{
+						FlxG.sound.play(AssetPaths.blocked_valve__ogg, 1, false);
+					}
 				}
 			}
 		}

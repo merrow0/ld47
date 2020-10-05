@@ -68,7 +68,9 @@ class Wurst extends FlxSprite
 
 		if (hitsExit)
 		{
+			FlxG.sound.play(AssetPaths.goodbye_poop__ogg, 1, false);
 			active = false;
+
 			FlxTween.tween(scale, {x: 0, y: 0}, 1, {
 				ease: FlxEase.quadInOut,
 				type: FlxTweenType.ONESHOT,
